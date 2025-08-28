@@ -14,7 +14,8 @@ import 'widget/error_detail_widget.dart';
 
 class MachineDetailScreen extends StatefulWidget {
   final MachineStatusModel machine;
-  const MachineDetailScreen({super.key, required this.machine});
+  final String name;
+  const MachineDetailScreen({super.key, required this.machine, required this.name});
 
   @override
   State<MachineDetailScreen> createState() => _MachineDetailScreenState();
@@ -22,7 +23,7 @@ class MachineDetailScreen extends StatefulWidget {
 
 class _MachineDetailScreenState extends State<MachineDetailScreen> {
   int indexFilter = 0;
-  ErrorDetailsModel? errorDetailsModel;
+  // ErrorDetailsModel? errorDetailsModel;
   ErrorStatsModel? errorStatsModel;
   DashboardErrorModel? dashboardErrorModel;
   ErrorDetailTotalModel? errorDetailTotalModel;
@@ -77,17 +78,15 @@ class _MachineDetailScreenState extends State<MachineDetailScreen> {
     listPercentError = dashboardErrorModel?.data
         ?.map((e) => (e.percentage ?? 0).round())
         .toList();
-    // if (widget.machine.error_code != null && widget.machine.error_code != "") {
-    //   errorDetailTotalModel = await MachineStatusGetData().getErrorDetail(
-    //     body: {
-    //       "line": widget.machine.line,
-    //       "location": widget.machine.location,
-    //       "machine_type": widget.machine.machineType,
-    //       "machine_name": widget.machine.machineName,
-    //       "error_code": widget.machine.error_code,
-    //     },
-    //   );
-    // }
+    final infoM = widget.machine.toJson()[widget.name];
+    if (infoM.toString().contains("ERROR")) {
+      errorDetailTotalModel = await MachineStatusGetData().getErrorDetail(
+        body: {
+          "typeParam": "Error",
+          "param": infoM.toString().split("-")[1]
+        },
+      );
+    }
     setState(() {});
   }
 
@@ -108,49 +107,49 @@ class _MachineDetailScreenState extends State<MachineDetailScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // if (widget.machine.status == "ERROR")
-                //   Column(
-                //     crossAxisAlignment: CrossAxisAlignment.start,
-                //     children: [
-                //       SizedBox(height: 16.h),
-                //       RichText(
-                //         text: TextSpan(
-                //           style: TextStyle(
-                //             fontSize: 48.sp,
-                //             fontWeight: FontWeight.bold,
-                //           ),
-                //           children: [
-                //             TextSpan(
-                //               text: 'Mã lỗi : ',
-                //               style: TextStyle(color: Colors.black),
-                //             ),
-                //             TextSpan(
-                //               text: widget.machine.error_code,
-                //               style: TextStyle(color: Colors.redAccent),
-                //             ),
-                //           ],
-                //         ),
-                //       ),
-                //       RichText(
-                //         text: TextSpan(
-                //           style: TextStyle(
-                //             fontSize: 48.sp,
-                //             fontWeight: FontWeight.bold,
-                //           ),
-                //           children: [
-                //             TextSpan(
-                //               text: 'Tên lỗi : ',
-                //               style: TextStyle(color: Colors.black),
-                //             ),
-                //             TextSpan(
-                //               text: errorDetailsModel?.error,
-                //               style: TextStyle(color: Colors.redAccent),
-                //             ),
-                //           ],
-                //         ),
-                //       ),
-                //     ],
-                //   ),
+                if (widget.machine.toJson()[widget.name].toString().contains("ERROR"))
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 16.h),
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 48.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Mã lỗi : ',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            TextSpan(
+                              text: widget.machine.toJson()[widget.name].toString().split("-")[1],
+                              style: TextStyle(color: Colors.redAccent),
+                            ),
+                          ],
+                        ),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 48.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Tên lỗi : ',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            TextSpan(
+                              text: errorDetailTotalModel?.data?[0].nameError,
+                              style: TextStyle(color: Colors.redAccent),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 SizedBox(height: 32.h),
                 selectFilter(),
                 Padding(
@@ -170,12 +169,12 @@ class _MachineDetailScreenState extends State<MachineDetailScreen> {
 
                 SizedBox(height: 24.h),
                 bieuDoWidget(errorPercent, otherPercent),
-                // if (widget.machine.status == "ERROR")
-                //   ErrorDetailWidget(
-                //     machines: [],
-                //     indexFilter: indexFilter,
-                //     errorDetailsModel: errorDetailTotalModel,
-                //   ),
+                if (widget.machine.toJson()[widget.name].toString().contains("ERROR"))
+                  ErrorDetailWidget(
+                    machines: [],
+                    indexFilter: indexFilter,
+                    errorDetailsModel: errorDetailTotalModel,
+                  ),
               ],
             ),
           ],
@@ -190,49 +189,49 @@ class _MachineDetailScreenState extends State<MachineDetailScreen> {
       children: [
         // ✅ Thông tin máy
         Text(
-           "",
+           widget.name??"",
           style: TextStyle(fontSize: 48.sp, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 16.h),
         Row(
           children: [
-            // Icon(
-            //   Icons.circle,
-            //   color: Constants
-            //       .statusMachine[widget.machine.status ?? "NA"]["color"],
-            //   size: 32.sp,
-            // ),
+            Icon(
+              Icons.circle,
+              color: Constants
+                  .statusMachine[widget.machine.toJson()[widget.name].toString().split("-")[0] ?? "NA"]["color"],
+              size: 32.sp,
+            ),
             SizedBox(width: 8.w),
             Text("Trạng thái: ", style: TextStyle(fontSize: 40.sp)),
-            // Text(
-            //   Constants.statusMachine[widget.machine.status ?? "NA"]["name"] ??
-            //       "",
-            //   style: TextStyle(fontSize: 48.sp, fontWeight: FontWeight.bold),
-            // ),
+            Text(
+              Constants.statusMachine[widget.machine.toJson()[widget.name].toString().split("-")[0] ?? "NA"]["name"] ??
+                  "",
+              style: TextStyle(fontSize: 48.sp, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
         itemInfoWidget(title: "LINE", text: widget.machine.line ?? ""),
         // itemInfoWidget(title: "LOCATION", text: widget.machine.location ?? ""),
-        InkWell(
-          onTap: () => goToInfoMaintenanceScreen(),
-          child: Stack(
-            // alignment: Alignment.bottomCenter,
-            children: [
-              Container(
-                margin: EdgeInsets.fromLTRB(0, 12.h, 12.w, 0),
-                padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
-                decoration: BoxDecoration(
-                  color: Colors.blueAccent,
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                child: Text(
-                  "Maintenance information",
-                  style: TextStyle(color: Colors.white, fontSize: 24.sp),
-                ),
-              ),
-            ],
-          ),
-        ),
+        // InkWell(
+        //   onTap: () => goToInfoMaintenanceScreen(),
+        //   child: Stack(
+        //     // alignment: Alignment.bottomCenter,
+        //     children: [
+        //       Container(
+        //         margin: EdgeInsets.fromLTRB(0, 12.h, 12.w, 0),
+        //         padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
+        //         decoration: BoxDecoration(
+        //           color: Colors.blueAccent,
+        //           borderRadius: BorderRadius.circular(16.r),
+        //         ),
+        //         child: Text(
+        //           "Maintenance information",
+        //           style: TextStyle(color: Colors.white, fontSize: 24.sp),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
         Container(
           margin: EdgeInsets.symmetric(vertical: 16.h),
           height: 400.h,

@@ -56,9 +56,10 @@ class _DropDownButtonCauseState extends State<DropDownButtonCause> {
                       ),
                       child: Center(
                         child: Text(
-                          widget.cause.listCount!
-                              .reduce((a, b) => a + b)
-                              .toString(),
+                          // widget.cause.listCount!
+                          //     .reduce((a, b) => a + b)
+                          //     .toString(),
+                          "0",
                           style: TextStyle(
                             fontSize: 48.sp,
                             color: Colors.white,
@@ -130,8 +131,8 @@ class _DropDownButtonCauseState extends State<DropDownButtonCause> {
                     index,
                   ) {
                     return giaiPhapWiget(
-                      widget.cause.solutions![index],
-                      widget.cause.listCount![index],
+                      widget.cause.solutions![index],0
+                      // widget.cause.listCount![index],
                     );
                   }),
                 ],

@@ -20,10 +20,11 @@ import '../../data_mau/data_mau.dart';
 class MachineStatusGetData {
   static String userId = "";
 
-
   Future getMachineStatus() async {
     if (kDebugMode) {
-      return ListMachineSMTStatusModel.fromJson({"data":apiMachineMachineStatus});
+      return ListMachineSMTStatusModel.fromJson({
+        "data": apiMachineMachineStatus,
+      });
     }
     final dioPost = DioClient.instance;
 
@@ -31,7 +32,7 @@ class MachineStatusGetData {
       final response = await dioPost.get(Constants.urlMachineStatus);
       debugPrint(response.toString());
       if (response.statusCode == 200 && response.data != null) {
-        return ListMachineSMTStatusModel.fromJson({"data":response.data});
+        return ListMachineSMTStatusModel.fromJson({"data": response.data});
       } else {
         throw Exception('Lỗi server: ${response.statusCode}');
       }
@@ -60,7 +61,7 @@ class MachineStatusGetData {
 
   Future getListConfirm() async {
     if (kDebugMode) {
-      return ListErrorNotConfirmModel.fromJson(getListConfirm_example);
+      return ListErrorNotConfirmModel.fromJson({"data":getListConfirm_example});
     }
     final dioPost = DioClient.instance;
 
@@ -69,7 +70,7 @@ class MachineStatusGetData {
 
       debugPrint(response.toString());
       if (response.statusCode == 200 && response.data != null) {
-        return ListErrorNotConfirmModel.fromJson(response.data);
+        return ListErrorNotConfirmModel.fromJson({"data":response.data});
       } else {
         showDialogMessage(message: 'Lỗi server: ${response.statusCode}');
       }
@@ -148,7 +149,7 @@ class MachineStatusGetData {
 
   Future getErrorDetail({required body}) async {
     if (kDebugMode) {
-      return ErrorDetailTotalModel.fromJson(getErrorDetail_example);
+      return ErrorDetailTotalModel.fromJson({"data": getErrorDetail_example});
     }
 
     final dioPost = DioClient.instance;
@@ -161,7 +162,7 @@ class MachineStatusGetData {
 
       // debugPrint(response.toString());
       if (response.statusCode == 200 && response.data != null) {
-        return ErrorDetailTotalModel.fromJson(response.data);
+        return ErrorDetailTotalModel.fromJson({"data": response.data});
       }
     } on DioException catch (e) {
       showDialogMessage(message: e.response?.data['error']);

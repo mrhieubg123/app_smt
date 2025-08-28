@@ -15,7 +15,7 @@ class MachineStatusTable extends StatelessWidget {
 
   final dynamic listColor = {
     "RUN": Colors.green,
-    "OFF": Colors.yellow,
+    "OFFt": Colors.yellow,
     "ERROR": Colors.red,
     "NA": Colors.grey,
   };
@@ -57,8 +57,7 @@ class MachineStatusTable extends StatelessWidget {
 
   getMachineFromLineLocation(line, location) {
     return machines
-        .firstWhereOrNull((e) => (e.line == line))
-        ?.toJson()[location];
+        .firstWhereOrNull((e) => (e.line == line && e.toJson()[location]!=null));
   }
 
   getColorFromLineLocation(line, location) {
@@ -216,7 +215,7 @@ class MachineStatusTable extends StatelessWidget {
                                                       getMachineFromLineLocation(
                                                         lineNames[lineIndex],
                                                         columnNames[index],
-                                                      ),
+                                                      ),columnNames[index]
                                                     ),
                                                 color: getColorFromLineLocation(
                                                   lineNames[lineIndex],
@@ -253,12 +252,12 @@ class MachineStatusTable extends StatelessWidget {
     );
   }
 
-  goToMachineDetailScreen(machine) {
+  goToMachineDetailScreen(machine,name) {
     Navigator.push(
       navigatorKey.currentContext!,
       MaterialPageRoute(
         builder: (BuildContext context) =>
-            MachineDetailScreen(machine: machine),
+            MachineDetailScreen(machine: machine,name:name),
       ),
     );
   }

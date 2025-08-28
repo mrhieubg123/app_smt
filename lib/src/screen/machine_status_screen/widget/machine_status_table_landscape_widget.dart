@@ -223,12 +223,12 @@ class MachineStatusTableLandscapeWidget extends StatelessWidget {
   }
 
   goToMachineDetailScreen(machine) {
-    Navigator.push(
-      navigatorKey.currentContext!,
-      MaterialPageRoute(
-        builder: (BuildContext context) =>
-            MachineDetailScreen(machine: machine),
-      ),
-    );
+    // Navigator.push(
+    //   navigatorKey.currentContext!,
+    //   MaterialPageRoute(
+    //     builder: (BuildContext context) =>
+    //         MachineDetailScreen(machine: machine),
+    //   ),
+    // );
   }
 }

@@ -7,13 +7,13 @@ class ListErrorNotConfirmModel {
     if (json['data'] != null) {
       data = <ErrorNotConfirmModel>[];
       json['data'].forEach((v) {
-        data!.add(new ErrorNotConfirmModel.fromJson(v));
+        data!.add( ErrorNotConfirmModel.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
@@ -22,65 +22,62 @@ class ListErrorNotConfirmModel {
 }
 
 class ErrorNotConfirmModel {
-  String? eNDTIME;
-  String? eRRORCODE;
-  String? eRRORTYPE;
-  String? error_name;
-  int? iD;
+  String? id;
   String? lINE;
-  String? lOCATION;
-  String? mACHINENAME;
-  String? mACHINETYPE;
-  String? sTARTTIME;
+  String? mACHINECODE;
   String? sTATUS;
-  int? tIME;
-  Null? idConfirm;
+  String? eRROR;
+  String? eRRORCODE;
+  String? root;
+  String? eMPConfirm;
+  String? act;
+  String? sTARTTIME;
+  String? eNDTIME;
+  int? tIMER;
 
   ErrorNotConfirmModel(
-      {this.eNDTIME,
-        this.eRRORCODE,
-        this.eRRORTYPE,
-        this.error_name,
-        this.iD,
-        this.lINE,
-        this.lOCATION,
-        this.mACHINENAME,
-        this.mACHINETYPE,
-        this.sTARTTIME,
+      {this.lINE,
+        this.id,
+        this.mACHINECODE,
         this.sTATUS,
-        this.tIME,
-        this.idConfirm});
+        this.eRROR,
+        this.eRRORCODE,
+        this.root,
+        this.eMPConfirm,
+        this.act,
+        this.sTARTTIME,
+        this.eNDTIME,
+        this.tIMER});
 
   ErrorNotConfirmModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    lINE = json['LINE'];
+    mACHINECODE = json['MACHINE_CODE'];
+    sTATUS = json['STATUS'];
+    eRROR = json['ERROR'];
+    eRRORCODE = json['ERROR_CODE'];
+    root = json['root_'];
+    eMPConfirm = json['EMP_confirm'];
+    act = json['act'];
+    sTARTTIME = json['START_TIME'];
     eNDTIME = json['END_TIME'];
-    eRRORCODE = json['error_code'];
-    eRRORTYPE = json['error_type'];
-    error_name = json['error_name'];
-    iD = json['id'];
-    lINE = json['line'];
-    lOCATION = json['location'];
-    mACHINENAME = json['machine_name'];
-    mACHINETYPE = json['machine_type'];
-    sTARTTIME = json['start_time'];
-    sTATUS = json['status'];
-    tIME = json['runtime_min'];
-    idConfirm = json['id_confirm'];
+    tIMER = json['TIMER'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['END_TIME'] = this.eNDTIME;
-    data['ERROR_CODE'] = this.eRRORCODE;
-    data['ERROR_TYPE'] = this.eRRORTYPE;
-    data['ID'] = this.iD;
-    data['LINE'] = this.lINE;
-    data['LOCATION'] = this.lOCATION;
-    data['MACHINE_NAME'] = this.mACHINENAME;
-    data['MACHINE_TYPE'] = this.mACHINETYPE;
-    data['START_TIME'] = this.sTARTTIME;
-    data['STATUS'] = this.sTATUS;
-    data['TIME'] = this.tIME;
-    data['id_confirm'] = this.idConfirm;
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['id'] = id;
+    data['LINE'] = lINE;
+    data['MACHINE_CODE'] = mACHINECODE;
+    data['STATUS'] = sTATUS;
+    data['ERROR'] = eRROR;
+    data['ERROR_CODE'] = eRRORCODE;
+    data['root_'] = root;
+    data['EMP_confirm'] = eMPConfirm;
+    data['act'] = act;
+    data['START_TIME'] = sTARTTIME;
+    data['END_TIME'] = eNDTIME;
+    data['TIMER'] = tIMER;
     return data;
   }
 }

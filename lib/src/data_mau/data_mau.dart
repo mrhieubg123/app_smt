@@ -7,75 +7,70 @@ dynamic api_dashboard_error_example = {
   ],
 };
 
-dynamic getErrorDetail_example = {
-  "data": [
-    {
-      "cause": "Xylanh không đi hết hành trình",
-      "error_id": 27,
-      "error_name": "Bất thường xylanh/Cylinder error",
-      "solution": "Kiểm tra van, khí, đế van...",
-      "used_count": 3,
-    },
-    {
-      "cause": "Xylanh không đi hết hành trình",
-      "error_id": 27,
-      "error_name": "Bất thường xylanh/Cylinder error",
-      "solution": "Kiểm tra cảm biến...",
-      "used_count": 3,
-    },
-    {
-      "cause": "Cảm biến xylanh không hoạt động",
-      "error_id": 28,
-      "error_name": "Bất thường xylanh/Cylinder error",
-      "solution": "Kiểm tra cảm biến hoặc từ trong xylanh...",
-      "used_count": 2,
-    },
-  ],
-};
+dynamic getErrorDetail_example = [
+  {
+    "ID": 119,
+    "Sub_code": "180343",
+    "Name_error": "Top Tape Exhaust(Lỗi kẹt tape)",
+    "Cause": "Cover tape is broken(Tape nhựa bị đứt)",
+    "solution": "Reset the cover tape properly(Lắp đặt lại dây tape đúng cách)"
+  }
+];
 
-dynamic getListConfirm_example = {
-  "data": [
-    {
-      "error_code": "G0014",
-      "error_name": "Gắp lỗi/Picking error",
-      "error_type": "Gắp lỗi/Picking error",
-      "id": 318,
-      "line": "GEN3",
-      "location": "11",
-      "machine_name": "Gap VI Automatically visual inspecttion Gap",
-      "machine_type": "XY Machine",
-      "runtime_min": 4586,
-      "start_time": "2025-07-15 08:44:11",
-      "status": "ERROR",
-    },
-    {
-      "error_code": "G0015",
-      "error_name": "Rơi liệu/ Material drop",
-      "error_type": "Rơi liệu/ Material drop",
-      "id": 314,
-      "line": "GEN3",
-      "location": "11",
-      "machine_name": "Gap VI Automatically visual inspecttion Gap",
-      "machine_type": "XY Machine",
-      "runtime_min": 4466,
-      "start_time": "2025-07-15 10:44:13",
-      "status": "ERROR",
-    },
-    {
-      "error_code": "G0015",
-      "error_name": "Rơi liệu/ Material drop",
-      "error_type": "Rơi liệu/ Material drop",
-      "id": 319,
-      "line": "GEN3",
-      "location": "11",
-      "machine_name": "Gap VI Automatically visual inspecttion Gap",
-      "machine_type": "XY Machine",
-      "runtime_min": 4344,
-      "start_time": "2025-07-15 12:46:13",
-      "status": "ERROR",
-    },
-  ],
-};
+dynamic getListConfirm_example = [
+  {
+    "LINE": "Line_5F",
+    "MACHINE_CODE": "H7",
+    "STATUS": "ERROR",
+    "ERROR": "Part Pickup Error ",
+    "ERROR_CODE": "180306",
+    "root_": "-Clogged nozzle detected. / Phát hiện lỗi đầu hút bị tắc\n.",
+    "EMP_confirm": "BuiVanChien",
+    "act": "Clean the applicable nozzle. / \nLàm sạch đầu hút.",
+    "START_TIME": "2025-08-26 07:08:39",
+    "END_TIME": "2025-08-26 07:19:16",
+    "TIMER": 637
+  },
+  {
+    "LINE": "Line_5F",
+    "MACHINE_CODE": "H7",
+    "STATUS": "ERROR",
+    "ERROR": "Part Pickup Error ",
+    "ERROR_CODE": "180306",
+    "root_": "-Clogged nozzle detected. / Phát hiện lỗi đầu hút bị tắc\n.",
+    "EMP_confirm": "BuiVanChien",
+    "act": "Clean the applicable nozzle. / \nLàm sạch đầu hút.",
+    "START_TIME": "2025-08-26 07:08:39",
+    "END_TIME": "2025-08-26 07:19:16",
+    "TIMER": 637
+  },
+  {
+    "LINE": "Line_5R",
+    "MACHINE_CODE": "H7",
+    "STATUS": "ERROR",
+    "ERROR": "Part Pickup Error ",
+    "ERROR_CODE": "180306",
+    "root_": "-Clogged nozzle detected. / Phát hiện lỗi đầu hút bị tắc\n.",
+    "EMP_confirm": "BuiVanChien",
+    "act": "Clean the applicable nozzle. / \nLàm sạch đầu hút.",
+    "START_TIME": "2025-08-26 07:08:39",
+    "END_TIME": "2025-08-26 07:19:16",
+    "TIMER": 637
+  },
+  {
+    "LINE": "Line_5R",
+    "MACHINE_CODE": "H7",
+    "STATUS": "ERROR",
+    "ERROR": "Part Pickup Error ",
+    "ERROR_CODE": "180306",
+    "root_": "-Clogged nozzle detected. / Phát hiện lỗi đầu hút bị tắc\n.",
+    "EMP_confirm": "BuiVanChien",
+    "act": "Clean the applicable nozzle. / \nLàm sạch đầu hút.",
+    "START_TIME": "2025-08-26 07:08:39",
+    "END_TIME": "2025-08-26 07:19:16",
+    "TIMER": 637
+  }
+];
 dynamic getErrorByCode_example = {
   "error_list": [
     {

@@ -31,13 +31,13 @@ class ErrorDetailWidget extends StatelessWidget {
         final existing = causeMap[cause]!;
         if (!existing.solutions!.contains(solution)) {
           existing.solutions!.add(solution!);
-          existing.listCount!.add(count!);
+          // existing.listCount!.add(count!);
         }
       } else {
         causeMap[cause!] = ListCause(
           cause: cause,
           solutions: [solution!],
-          listCount: [count!],
+          // listCount: [count!],
         );
       }
     }

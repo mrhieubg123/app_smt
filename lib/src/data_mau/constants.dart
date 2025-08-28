@@ -10,8 +10,8 @@ class Constants {
   static String urlLogin = "api/login";
   static String urlRegister = "api/create";
   static String urlMachineStatus = "api/Machine/MachineStatus";
-  static String urlGetListConfirm = "api/confirm";
-  static String urlErrorsByCode = "api/errors_by_code";
+  static String urlGetListConfirm = "api/Machine/MachineErrorOver10m";
+  static String urlErrorsByCode = "api/Machine/MachineStatusQueryParam";
   static String urlDashboardError = "api/dashboard-error";
   static String urlConfirmErrorDetail = "api/confirm_error_detail";
   static String urlGetErrorDetail = "api/get_error_detail";

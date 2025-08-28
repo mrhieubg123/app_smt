@@ -4,6 +4,7 @@ import '../../../core/function/function.dart';
 import '../../../core/widget/select_image_device.dart';
 
 import '../../main.dart';
+import '../model/error_detail_model.dart';
 
 showDialogMessage({message = "", title = "Thông báo", onOk}) {
   showDialog(
@@ -77,6 +78,59 @@ Future<List<String?>?> showTextInputDialog() async {
               }
               Navigator.pop(context, [
                 controllerNN.text,
+                controllerGP.text,
+              ]); // đóng dialog
+              // Hoặc gọi callback / xử lý dữ liệu ở đây
+            },
+            child: const Text('Xác nhận'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Future<List<String?>?> showTextInputGPDialog({String? ngNhan}) async {
+  TextEditingController controllerGP = TextEditingController();
+
+  return showDialog<List<String?>>(
+    context: navigatorKey.currentContext!,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(
+          'Nhập giải pháp mới',
+          style: TextStyle(fontSize: 36.sp, fontWeight: FontWeight.bold),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Nguyên nhân: $ngNhan ',
+              style: TextStyle(fontSize: 28.sp),
+            ),
+            TextField(
+              controller: controllerGP,
+              decoration: const InputDecoration(
+                hintText: 'Nhập giải pháp...',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SelectImageDeviceWidget(),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context), // đóng dialog
+            child: const Text('Hủy'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              String gp = controllerGP.text.trim();
+              if (gp.isEmpty) {
+                showDialogMessage(message: "Vui lòng nhập giải pháp");
+                return;
+              }
+              Navigator.pop(context, [
                 controllerGP.text,
               ]); // đóng dialog
               // Hoặc gọi callback / xử lý dữ liệu ở đây

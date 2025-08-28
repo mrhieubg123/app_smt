@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/model/error_by_code_model.dart';
 import '../../../../core/model/error_detail_model.dart';
+import '../../../../core/model/error_detail_total_model.dart';
 import '../../../../core/model/error_not_confirm_model.dart';
 import '../../../../core/widget/dialog.dart';
 import '../../../../main.dart';
@@ -23,19 +24,26 @@ class DropDownButton extends StatefulWidget {
 
 class _DropDownButtonState extends State<DropDownButton> {
   bool isOpen = false;
-  ErrorDetailByCodeModel? errorDetailByCodeModel;
+  // ErrorDetailByCodeModel? errorDetailByCodeModel;
   List<ListCause>? dsNguyenNhan;
   ListCause? nguyenNhan;
   String? giaiPhap;
+  ErrorDetailTotalModel? errorDetailTotalModel;
 
   Future initData() async {
-    errorDetailByCodeModel ??= await MachineStatusGetData().getErrorByCode(
+    errorDetailTotalModel = await MachineStatusGetData().getErrorDetail(
       body: {
-        "machine_id": widget.errorNotConfirmModel.iD,
-        "error_code": widget.errorNotConfirmModel.eRRORCODE,
+        "typeParam": "Error",
+        "param": widget.errorNotConfirmModel.eRRORCODE,
       },
     );
-    dsNguyenNhan = groupByCause(errorDetailByCodeModel?.errorList ?? []);
+    // errorDetailByCodeModel ??= await MachineStatusGetData().getErrorByCode(
+    //   body: {
+    //     "machine_id": widget.errorNotConfirmModel.mACHINECODE,
+    //     "error_code": widget.errorNotConfirmModel.eRRORCODE,
+    //   },
+    // );
+    dsNguyenNhan = groupByCause(errorDetailTotalModel?.data ?? []);
     nguyenNhan = null;
     giaiPhap = null;
   }
@@ -47,7 +55,7 @@ class _DropDownButtonState extends State<DropDownButton> {
     });
   }
 
-  List<ListCause> groupByCause(List<ErrorList> data) {
+  List<ListCause> groupByCause(List<ErrorCauseSolutionModel> data) {
     final Map<String, ListCause> causeMap = {};
 
     for (var item in data) {
@@ -99,16 +107,16 @@ class _DropDownButtonState extends State<DropDownButton> {
                       children: [
                         infoRow(
                           title: "Machine name",
-                          text: widget.errorNotConfirmModel.mACHINENAME,
+                          text: widget.errorNotConfirmModel.mACHINECODE,
                         ),
                         infoRow(
                           title: "Line",
                           text: widget.errorNotConfirmModel.lINE,
                         ),
-                        infoRow(
-                          title: "Location",
-                          text: widget.errorNotConfirmModel.lOCATION,
-                        ),
+                        // infoRow(
+                        //   title: "Location",
+                        //   text: widget.errorNotConfirmModel.lOCATION,
+                        // ),
                         infoRow(
                           title: "Error code",
                           text: widget.errorNotConfirmModel.eRRORCODE,
@@ -116,7 +124,7 @@ class _DropDownButtonState extends State<DropDownButton> {
                         ),
                         infoRow(
                           title: "Error name",
-                          text: widget.errorNotConfirmModel.eRRORTYPE,
+                          text: widget.errorNotConfirmModel.eRROR,
                           color: Colors.redAccent,
                         ),
                         infoRow(
@@ -154,7 +162,7 @@ class _DropDownButtonState extends State<DropDownButton> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   InkWell(
-                    onTap: onTapAddGiaiPhap,
+                    onTap: onTapAddNgNhGiaiPhap,
                     child: Container(
                       margin: EdgeInsets.fromLTRB(0, 32.h, 0, 0),
                       padding: EdgeInsets.symmetric(
@@ -303,10 +311,7 @@ class _DropDownButtonState extends State<DropDownButton> {
         children: [
           TextSpan(
             text: '$title:  ',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 30.sp,
-            ),
+            style: TextStyle(color: Colors.black, fontSize: 30.sp),
           ),
           TextSpan(
             text: text,
@@ -473,6 +478,17 @@ class _DropDownButtonState extends State<DropDownButton> {
                     ),
                   ),
                 ),
+                InkWell(
+                  onTap: onTapAddGiaiPhap,
+                  child: Text(
+                    "+ Thêm giải pháp",
+                    style: TextStyle(
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.blueAccent,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -490,32 +506,33 @@ class _DropDownButtonState extends State<DropDownButton> {
       showDialogMessage(message: "Vui lòng chọn giải pháp");
       return;
     }
-    ErrorList? errorListSelected = errorDetailByCodeModel!.errorList
+    ErrorCauseSolutionModel? errorListSelected = errorDetailTotalModel!.data
         ?.firstWhere(
           (e) => (e.cause == nguyenNhan?.cause && e.solution == giaiPhap),
         );
     dynamic result = await MachineStatusGetData().createConfirmError(
       body: {
-        "idconfirm": errorDetailByCodeModel?.idconfirm,
+        "idconfirm": widget.errorNotConfirmModel.id,
+        "empId": MachineStatusGetData.userId,
         "error_id": errorListSelected?.id,
       },
     );
     if (result != null) {
       isOpen = false;
-      errorDetailByCodeModel = null;
+      errorDetailTotalModel = null;
       giaiPhap = null;
       nguyenNhan = null;
       widget.onConfirmSuccess!();
     }
   }
 
-  onTapAddGiaiPhap() async {
+  onTapAddNgNhGiaiPhap() async {
     final List<String?>? result = await showTextInputDialog();
     if (result != null) {
       dynamic resultApi = await MachineStatusGetData().createCauseSolution(
         body: {
           "error_code": widget.errorNotConfirmModel.eRRORCODE,
-          "error_name": widget.errorNotConfirmModel.eRRORTYPE,
+          "error_name": widget.errorNotConfirmModel.eRROR,
           "cause": result[0],
           "solution": result[1],
         },
@@ -525,5 +542,26 @@ class _DropDownButtonState extends State<DropDownButton> {
         initData();
       }
     }
+  }
+
+  onTapAddGiaiPhap() async {
+    final List<String?>? result = await showTextInputGPDialog(
+      ngNhan: nguyenNhan?.cause,
+    );
+    if (result != null) {
+      dynamic resultApi = await MachineStatusGetData().createCauseSolution(
+        body: {
+          "error_code": widget.errorNotConfirmModel.eRRORCODE,
+          "error_name": widget.errorNotConfirmModel.eRROR,
+          "cause": nguyenNhan?.cause,
+          "solution": result[0],
+        },
+      );
+      if (resultApi == true) {
+        showDialogMessage(message: "Thêm giải pháp mới thành công");
+        initData();
+      }
+    }
+    Navigator.pop(context);
   }
 }
