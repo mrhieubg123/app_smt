@@ -79,7 +79,8 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
   Widget build(BuildContext context) {
     return OrientationBuilder(
       builder: (BuildContext context, Orientation orientation) {
-        return _buildPortrait();
+        // return _buildPortrait();
+        return _buildLandscape();
         if (orientation == Orientation.portrait) {
           return _buildPortrait();
         } else {

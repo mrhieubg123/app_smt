@@ -15,7 +15,7 @@ class MachineStatusTableLandscapeWidget extends StatelessWidget {
 
   final dynamic listColor = {
     "RUN": Colors.green,
-    "OFF": Colors.yellow,
+    "OFFt": Colors.yellow,
     "ERROR": Colors.red,
     "NA": Colors.grey,
   };
@@ -36,7 +36,18 @@ class MachineStatusTableLandscapeWidget extends StatelessWidget {
     "Line_5R",
   ];
 
-  List<String> columnNames = ["1", "2", "3", "4", "5", "6"];
+  List<String> columnNames = [
+    "PRINTER",
+    "H1",
+    "H2",
+    "H3",
+    "H4",
+    "H5",
+    "H6",
+    "H7",
+    "H8",
+    "REFLOW",
+  ];
 
   Widget buildLight({Color? color, double? radius, onTap}) {
     return InkWell(
@@ -46,16 +57,21 @@ class MachineStatusTableLandscapeWidget extends StatelessWidget {
   }
 
   getMachineFromLineLocation(line, location) {
-    return machines.firstWhereOrNull(
-      (e) => (e.line == line),
-    );
+    return machines
+        .firstWhereOrNull((e) => (e.line == line && e.toJson()[location]!=null));
   }
 
   getColorFromLineLocation(line, location) {
-    MachineStatusModel? result = machines.firstWhereOrNull(
-      (e) => (e.line == line),
-    );
-    if (result != null) return listColor[result.toJson()[location]];
+    try {
+      MachineStatusModel? result = machines.firstWhereOrNull(
+            (e) => (e.line == line),
+      );
+      if (result != null) {
+        return listColor[result.toJson()[location].toString().split("-")[0]];
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
     return Colors.grey;
   }
 
@@ -80,12 +96,12 @@ class MachineStatusTableLandscapeWidget extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ...List.generate(numberColumns, (index) {
+              ...List.generate(columnNames.length, (index) {
                 return Flexible(
                   flex: 1,
                   child: Center(
                     child: Text(
-                      (index + 1).toString(),
+                      columnNames[index],
                       style: TextStyle(
                         color: Colors.blueAccent,
                         fontSize: 16.sp,
@@ -141,64 +157,44 @@ class MachineStatusTableLandscapeWidget extends StatelessWidget {
                       Expanded(
                         child: Column(
                           children: [
-                            ...List.generate(numberRowsPerLine, (indexColumn) {
-                              return Column(
+                            SizedBox(
+                              height: 72.h,
+                              child: Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
                                 children: [
-                                  SizedBox(
-                                    height: 100.h,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        ...List.generate(
-                                          numberColumns,
-                                          (index) => Flexible(
-                                            flex: 1,
-                                            child:
-                                                getMachineFromLineLocation(
-                                                      lineNames[lineIndex],
-                                                      index +
-                                                          1 +
-                                                          indexColumn *
-                                                              numberColumns,
-                                                    ) !=
-                                                    null
-                                                ? Center(
-                                                    child: buildLight(
-                                                      radius: 72.r,
-                                                      onTap: () =>
-                                                          goToMachineDetailScreen(
-                                                            getMachineFromLineLocation(
-                                                              lineNames[lineIndex],
-                                                              index +
-                                                                  1 +
-                                                                  indexColumn *
-                                                                      numberColumns,
-                                                            ),
-                                                          ),
-                                                      color:
-                                                          getColorFromLineLocation(
-                                                            lineNames[lineIndex],
-                                                            index +
-                                                                1 +
-                                                                indexColumn *
-                                                                    numberColumns,
-                                                          ),
-                                                    ),
-                                                  )
-                                                : SizedBox(
-                                                    width: double.infinity,
-                                                  ),
+                                  ...List.generate(
+                                    columnNames.length,
+                                        (index) => Flexible(
+                                      flex: 1,
+                                      child:
+                                      getMachineFromLineLocation(
+                                        lineNames[lineIndex],
+                                        columnNames[index],
+                                      ) !=
+                                          null
+                                          ? Center(
+                                        child: buildLight(
+                                          radius: 72.r,
+                                          onTap: () =>
+                                              goToMachineDetailScreen(
+                                                  getMachineFromLineLocation(
+                                                    lineNames[lineIndex],
+                                                    columnNames[index],
+                                                  ),columnNames[index]
+                                              ),
+                                          color: getColorFromLineLocation(
+                                            lineNames[lineIndex],
+                                            columnNames[index],
                                           ),
                                         ),
-                                      ],
+                                      )
+                                          : SizedBox(width: double.infinity),
                                     ),
                                   ),
-                                  if (indexColumn != numberRowsPerLine-1)
-                                    Divider(color: Colors.white),
                                 ],
-                              );
-                            }),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -222,13 +218,13 @@ class MachineStatusTableLandscapeWidget extends StatelessWidget {
     );
   }
 
-  goToMachineDetailScreen(machine) {
-    // Navigator.push(
-    //   navigatorKey.currentContext!,
-    //   MaterialPageRoute(
-    //     builder: (BuildContext context) =>
-    //         MachineDetailScreen(machine: machine),
-    //   ),
-    // );
+  goToMachineDetailScreen(machine,name) {
+    Navigator.push(
+      navigatorKey.currentContext!,
+      MaterialPageRoute(
+        builder: (BuildContext context) =>
+            MachineDetailScreen(machine: machine,name:name),
+      ),
+    );
   }
 }

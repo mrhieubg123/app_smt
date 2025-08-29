@@ -351,26 +351,32 @@ class MachineStatusGetData {
   Future<bool> loginUser(String cardId, String password) async {
     try {
       if (kDebugMode) return true;
-      final dioPost = DioClient.instance;
-      final response = await dioPost.post(
-        Constants.urlLogin,
+      // final dioPost = DioClient.instance;
+      // final response = await dioPost.post(
+      //   Constants.urlLogin,
+      //   data: {'username': cardId, 'password': password},
+      // );
+
+      var dio = Dio();
+      var headers = {'Content-Type': 'application/json'};
+      var response = await dio.request(
+        'https://10.225.42.71:5000/${Constants.urlLogin}',
+        options: Options(method: 'POST', headers: headers),
         data: {'username': cardId, 'password': password},
       );
 
-      if (response != null) {
+      if (response.statusCode == 200) {
         userId = cardId;
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', response.data['token']);
         print('✅ Đăng nhập thành công: $cardId');
         return true;
       }
-      return false;
     } on DioException catch (e) {
       showDialogMessage(message: e.response?.data['error']);
-      return false;
     } catch (e) {
       showDialogMessage(message: '❌ Lỗi không xác định: $e');
-      return false;
     }
+    return false;
   }
 }
