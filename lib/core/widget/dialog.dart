@@ -57,7 +57,7 @@ Future<List<String?>?> showTextInputDialog() async {
                 border: OutlineInputBorder(),
               ),
             ),
-            SelectImageDeviceWidget(),
+            // SelectImageDeviceWidget(),
           ],
         ),
         actions: [
@@ -115,7 +115,7 @@ Future<List<String?>?> showTextInputGPDialog({String? ngNhan}) async {
                 border: OutlineInputBorder(),
               ),
             ),
-            SelectImageDeviceWidget(),
+            // SelectImageDeviceWidget(),
           ],
         ),
         actions: [

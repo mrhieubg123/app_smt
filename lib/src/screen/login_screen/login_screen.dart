@@ -112,17 +112,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Text('Đăng nhập'),
                 ),
                 SizedBox(height: 48.h),
-                InkWell(
-                  onTap: goToRegisterScreen,
-                  child: Text(
-                    "Đăng ký tài khoản",
-                    style: TextStyle(
-                      fontSize: 32.sp,
-                      color: Colors.blueAccent,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ),
+                // InkWell(
+                //   onTap: goToRegisterScreen,
+                //   child: Text(
+                //     "Đăng ký tài khoản",
+                //     style: TextStyle(
+                //       fontSize: 32.sp,
+                //       color: Colors.blueAccent,
+                //       fontStyle: FontStyle.italic,
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),

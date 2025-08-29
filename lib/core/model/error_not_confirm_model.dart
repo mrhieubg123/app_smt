@@ -7,7 +7,7 @@ class ListErrorNotConfirmModel {
     if (json['data'] != null) {
       data = <ErrorNotConfirmModel>[];
       json['data'].forEach((v) {
-        data!.add( ErrorNotConfirmModel.fromJson(v));
+        data!.add(ErrorNotConfirmModel.fromJson(v));
       });
     }
   }
@@ -22,62 +22,70 @@ class ListErrorNotConfirmModel {
 }
 
 class ErrorNotConfirmModel {
-  String? id;
-  String? lINE;
-  String? mACHINECODE;
-  String? sTATUS;
-  String? eRROR;
-  String? eRRORCODE;
-  String? root;
+  String? iD;
+  String? line;
+  String? timeAlarm;
+  String? dateAlarm;
+  String? content;
   String? eMPConfirm;
+  String? root;
   String? act;
-  String? sTARTTIME;
-  String? eNDTIME;
-  int? tIMER;
+  String? type;
+  String? dateTime;
+  int? iDD;
+  String? signal;
+  String? signalTuan;
+  String? mark;
 
   ErrorNotConfirmModel(
-      {this.lINE,
-        this.id,
-        this.mACHINECODE,
-        this.sTATUS,
-        this.eRROR,
-        this.eRRORCODE,
-        this.root,
+      {this.iD,
+        this.line,
+        this.timeAlarm,
+        this.dateAlarm,
+        this.content,
         this.eMPConfirm,
+        this.root,
         this.act,
-        this.sTARTTIME,
-        this.eNDTIME,
-        this.tIMER});
+        this.type,
+        this.dateTime,
+        this.iDD,
+        this.signal,
+        this.signalTuan,
+        this.mark});
 
   ErrorNotConfirmModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    lINE = json['LINE'];
-    mACHINECODE = json['MACHINE_CODE'];
-    sTATUS = json['STATUS'];
-    eRROR = json['ERROR'];
-    eRRORCODE = json['ERROR_CODE'];
-    root = json['root_'];
+    iD = json['ID'];
+    line = json['line'];
+    timeAlarm = json['time_alarm'];
+    dateAlarm = json['date_alarm'];
+    content = json['content'];
     eMPConfirm = json['EMP_confirm'];
+    root = json['root_'];
     act = json['act'];
-    sTARTTIME = json['START_TIME'];
-    eNDTIME = json['END_TIME'];
-    tIMER = json['TIMER'];
+    type = json['type'];
+    dateTime = json['date_time'];
+    iDD = json['IDD'];
+    signal = json['signal'];
+    signalTuan = json['signal_tuan'];
+    mark = json['mark'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = id;
-    data['LINE'] = lINE;
-    data['MACHINE_CODE'] = mACHINECODE;
-    data['STATUS'] = sTATUS;
-    data['ERROR'] = eRROR;
-    data['ERROR_CODE'] = eRRORCODE;
-    data['root_'] = root;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['ID'] = iD;
+    data['line'] = line;
+    data['time_alarm'] = timeAlarm;
+    data['date_alarm'] = dateAlarm;
+    data['content'] = content;
     data['EMP_confirm'] = eMPConfirm;
+    data['root_'] = root;
     data['act'] = act;
-    data['START_TIME'] = sTARTTIME;
-    data['END_TIME'] = eNDTIME;
-    data['TIMER'] = tIMER;
+    data['type'] = type;
+    data['date_time'] = dateTime;
+    data['IDD'] = iDD;
+    data['signal'] = signal;
+    data['signal_tuan'] = signalTuan;
+    data['mark'] = mark;
     return data;
   }
 }

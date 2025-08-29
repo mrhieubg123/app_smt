@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/model/error_cause_solution_model.dart';
 import '../../../core/model/error_detail_model.dart';
 import '../../../core/model/error_not_confirm_model.dart';
+import '../machine_status_screen/machine_status_getdata.dart';
 import 'widget/drop_down_button.dart';
 
 class ErrorStableScreen extends StatefulWidget {
@@ -17,15 +19,21 @@ class ErrorStableScreen extends StatefulWidget {
 
 class _ErrorStableScreenState extends State<ErrorStableScreen> {
   ListErrorNotConfirmModel? listErrorNotConfirmModelState;
+  DataErrorCauseSolutionModel? dataErrorCauseSolutionModel;
 
   @override
   void initState() {
+    initData();
     listErrorNotConfirmModelState = widget.listErrorNotConfirmModel;
     super.initState();
     // 🔒 Khoá hướng dọc
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  }
+
+  Future initData() async {
+    dataErrorCauseSolutionModel = await MachineStatusGetData()
+        .getDataErrorCauseSolution();
+    setState(() {});
   }
 
   @override
@@ -90,6 +98,7 @@ class _ErrorStableScreenState extends State<ErrorStableScreen> {
                   return DropDownButton(
                     errorNotConfirmModel:
                         listErrorNotConfirmModelState!.data![index],
+                    dataErrorCauseSolutionModel: dataErrorCauseSolutionModel,
                     onConfirmSuccess: () {
                       setState(() {
                         widget.listErrorNotConfirmModel.data?.removeAt(index);
@@ -97,6 +106,7 @@ class _ErrorStableScreenState extends State<ErrorStableScreen> {
                             widget.listErrorNotConfirmModel;
                       });
                     },
+                    onAddSolution: initData
                   );
                 },
               ),
