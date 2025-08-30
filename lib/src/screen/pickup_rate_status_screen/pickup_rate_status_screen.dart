@@ -2,27 +2,26 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../core/widget/dialog.dart';
+import '../../../core/model/pickup_rate_status_model.dart';
 import '../../../src/screen/machine_status_screen/machine_status_getdata.dart';
 import 'widget/machine_status_table_widget.dart';
-import '../../../core/model/error_not_confirm_model.dart';
-import '../../../core/model/machine_status_model.dart';
-import '../error_table_screen/error_table_screen.dart';
 import 'widget/machine_status_table_landscape_widget.dart';
 
-class MachineStatusApp extends StatefulWidget {
-  const MachineStatusApp({super.key});
+class PickupRateStatusStatusApp extends StatefulWidget {
+  const PickupRateStatusStatusApp({super.key});
 
   @override
-  State<MachineStatusApp> createState() => _MachineStatusAppState();
+  State<PickupRateStatusStatusApp> createState() =>
+      _PickupRateStatusStatusAppState();
 }
 
-class _MachineStatusAppState extends State<MachineStatusApp> {
-  ListMachineSMTStatusModel? listMachineStatusModel;
-  ListErrorNotConfirmModel? listErrorNotConfirmModel;
+class _PickupRateStatusStatusAppState extends State<PickupRateStatusStatusApp> {
+  DataPickupRateStatusModel? dataPickupRateStatusModel;
   List<String> listLine = [];
   List<String> listLocation = [];
   Timer? _timer;
+  List<int> countStatus = [0, 0, 0, 0];
+  List<double> specStatus = [99.8, 99.7];
   @override
   void initState() {
     startPollingData();
@@ -43,26 +42,45 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
   }
 
   Future initData() async {
-    listMachineStatusModel = await MachineStatusGetData().getMachineStatus();
-    if (listMachineStatusModel?.data != null) {
-      listLine = MachineStatusGetData().getUniqueSortedLines(
-        listMachineStatusModel!.data!,
+    dataPickupRateStatusModel = await MachineStatusGetData()
+        .getPickupRateStatus();
+    if (dataPickupRateStatusModel?.data != null) {
+      listLine = MachineStatusGetData().getUniqueSortedLinesPickupRate(
+        dataPickupRateStatusModel!.data!,
       );
       listLocation = [
-        "PRINTER",
-        "H1",
-        "H2",
-        "H3",
-        "H4",
-        "H5",
-        "H6",
-        "H7",
-        "H8",
-        "REFLOW",
+        "BN3_H1",
+        "BN3_H2",
+        "BN3_H3",
+        "BN3_H4",
+        "BN3_H5",
+        "BN3_H6",
+        "BN3_G1",
+        "BN3_G2",
       ];
     }
-    listErrorNotConfirmModel = await MachineStatusGetData().getListConfirm();
+    initCountStatus();
     setState(() {});
+  }
+
+  initCountStatus() {
+    countStatus = [0,0,0,0];
+    for (PickupRateStatusModel item
+        in (dataPickupRateStatusModel?.data ?? [])) {
+      final map = item.toJson(); // chuyển model thành Map
+      for (var value in map.values) {
+        if (value.toString().contains("_") ) continue;
+        if (value == null) {
+          countStatus[3]++;
+        } else if (value >= specStatus[0]) {
+          countStatus[0]++;
+        } else if (value >= specStatus[1]&&value < specStatus[0]) {
+          countStatus[1]++;
+        } else {
+          countStatus[2]++;
+        }
+      }
+    }
   }
 
   startPollingData() async {
@@ -101,7 +119,7 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
           child: Icon(Icons.arrow_back, size: 64.h, color: Colors.white),
         ),
         title: Text(
-          "Machine Status",
+          "Pickup Rate Status",
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 48.sp,
@@ -125,53 +143,35 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
             SizedBox(height: kToolbarHeight + 100.h),
             buildStatusStatsWidget(),
             Flexible(
-              child: MachineStatusTable(
+              child: PickupRateStatusTable(
                 lineNames: listLine,
                 columnNames: listLocation,
-                machines: listMachineStatusModel?.data ?? [],
+                machines: dataPickupRateStatusModel?.data ?? [],
               ),
             ),
-            InkWell(
-              onTap: () => goToErrorTableScreen(context),
-              child: Stack(
-                alignment: Alignment.topRight,
-                children: [
-                  Container(
-                    margin: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
-                    padding: EdgeInsets.symmetric(
-                      vertical: 24.h,
-                      horizontal: 32.w,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.blueAccent,
-                      borderRadius: BorderRadius.circular(32.r),
-                    ),
-                    child: Text(
-                      "Confirm",
-                      style: TextStyle(color: Colors.white, fontSize: 48.sp),
-                    ),
-                  ),
-                  if (listErrorNotConfirmModel?.data != null &&
-                      listErrorNotConfirmModel!.data!.isNotEmpty)
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      child: CircleAvatar(
-                        radius: 32.r,
-                        backgroundColor: Colors.red,
-                        child: Text(
-                          (listErrorNotConfirmModel?.data?.length ?? 0)
-                              .toString(),
-                          style: TextStyle(
-                            fontSize: 32.sp,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
+            // InkWell(
+            //   onTap: () => goToErrorTableScreen(context),
+            //   child: Stack(
+            //     alignment: Alignment.topRight,
+            //     children: [
+            //       Container(
+            //         margin: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+            //         padding: EdgeInsets.symmetric(
+            //           vertical: 24.h,
+            //           horizontal: 32.w,
+            //         ),
+            //         decoration: BoxDecoration(
+            //           color: Colors.blueAccent,
+            //           borderRadius: BorderRadius.circular(32.r),
+            //         ),
+            //         child: Text(
+            //           "Confirm",
+            //           style: TextStyle(color: Colors.white, fontSize: 48.sp),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -188,53 +188,7 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
           onTap: () => Navigator.pop(context),
           child: Icon(Icons.arrow_back, size: 64.h, color: Colors.white),
         ),
-        // title: Text(
-        //   "Machine Status",
-        //   style: TextStyle(
-        //     fontSize: 24.sp,
-        //     fontWeight: FontWeight.bold,
-        //     color: Colors.white,
-        //   ),
-        // ),
         actions: [
-          InkWell(
-            onTap: () => goToErrorTableScreen(context),
-            child: Stack(
-              // alignment: Alignment.bottomCenter,
-              children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 12.h, 12.w, 0),
-                  padding: EdgeInsets.symmetric(
-                    vertical: 16.h,
-                    horizontal: 16.w,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.blueAccent,
-                    borderRadius: BorderRadius.circular(32.r),
-                  ),
-                  child: Text(
-                    "Confirm",
-                    style: TextStyle(color: Colors.white, fontSize: 24.sp),
-                  ),
-                ),
-                if (listErrorNotConfirmModel?.data != null &&
-                    listErrorNotConfirmModel!.data!.isNotEmpty)
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: CircleAvatar(
-                      radius: 42.r,
-                      backgroundColor: Colors.red,
-                      child: Text(
-                        (listErrorNotConfirmModel?.data?.length ?? 0)
-                            .toString(),
-                        style: TextStyle(fontSize: 20.sp, color: Colors.white),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
           buildStatusStatsLandscapeWidget(),
         ],
       ),
@@ -251,10 +205,10 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
           children: [
             SizedBox(height: kToolbarHeight + 100.h),
             Flexible(
-              child: MachineStatusTableLandscapeWidget(
+              child: PickupRateStatusTableLandscapeWidget(
                 lineNames: listLine,
                 columnNames: listLocation,
-                machines: listMachineStatusModel?.data ?? [],
+                machines: dataPickupRateStatusModel?.data ?? [],
               ),
             ),
           ],
@@ -287,7 +241,7 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
                   ),
                   child: Center(
                     child: Text(
-                      getCountStatus("RUN").toString(),
+                      countStatus[0].toString(),
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -297,47 +251,9 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
                   ),
                 ),
                 Text(
-                  "RUN",
+                  "≥99.8",
                   style: TextStyle(
                     color: Colors.green,
-                    fontSize: 40.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Flexible(
-            flex: 1,
-            child: Column(
-              children: [
-                Container(
-                  height: 1.sw / 4 - 88.w,
-                  width: 1.sw / 4 - 88.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [
-                        Color(0xFFFF5F6D), // đỏ dâu
-                        Color(0xFF920E19), // cam sáng
-                      ],
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      getCountStatus("ERROR").toString(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 40.sp,
-                      ),
-                    ),
-                  ),
-                ),
-                Text(
-                  "ERROR",
-                  style: TextStyle(
-                    color: Colors.red,
                     fontSize: 40.sp,
                     fontWeight: FontWeight.bold,
                   ),
@@ -363,7 +279,7 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
                   ),
                   child: Center(
                     child: Text(
-                      getCountStatus("OFF").toString(),
+                      countStatus[1].toString(),
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -373,7 +289,45 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
                   ),
                 ),
                 Text(
-                  "STOP",
+                  "≥99.7",
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 40.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            child: Column(
+              children: [
+                Container(
+                  height: 1.sw / 4 - 88.w,
+                  width: 1.sw / 4 - 88.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        Color(0xFFFF5F6D), // đỏ dâu
+                        Color(0xFF920E19), // cam sáng
+                      ],
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      countStatus[2].toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 40.sp,
+                      ),
+                    ),
+                  ),
+                ),
+                Text(
+                  "<99.7",
                   style: TextStyle(
                     color: Colors.yellow,
                     fontSize: 40.sp,
@@ -401,7 +355,7 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
                   ),
                   child: Center(
                     child: Text(
-                      getCountStatus(null).toString(),
+                      countStatus[3].toString(),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 40.sp,
@@ -434,10 +388,10 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
             Color(0xFFA8E063), // xanh lá nhạt
             Color(0xFF56AB2F), // xanh lá đậm
           ],
-          count: getCountStatus("RUN"),
+          count: countStatus[0],
         ),
         Text(
-          " Run   ",
+          " ≥99.8   ",
           style: TextStyle(color: Colors.white, fontSize: 24.sp),
         ),
         buildLight(
@@ -445,10 +399,10 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
             Color(0xFFFFD200), // vàng tươi
             Color(0xFFF7971E), // cam đậm
           ],
-          count: getCountStatus("OFF"),
+          count: countStatus[1],
         ),
         Text(
-          " Stop   ",
+          " ≥99.7   ",
           style: TextStyle(color: Colors.white, fontSize: 24.sp),
         ),
         buildLight(
@@ -456,10 +410,10 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
             Color(0xFFFF5F6D), // đỏ dâu
             Color(0xFF920E19), // cam sáng
           ],
-          count: getCountStatus("ERROR"),
+          count: countStatus[2],
         ),
         Text(
-          " Error   ",
+          " <99.7   ",
           style: TextStyle(color: Colors.white, fontSize: 24.sp),
         ),
         buildLight(
@@ -467,7 +421,7 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
             Color(0xFFBDC3C7), // xám bạc
             Color(0xFF2C3E50), // xám than
           ],
-          count: getCountStatus("NA"),
+          count: countStatus[3],
         ),
         Text(
           " N/A   ",
@@ -491,39 +445,23 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
     );
   }
 
-  getCountStatus(status) {
-    int t =0;
-    for (MachineStatusModel item in (listMachineStatusModel?.data ?? [])) {
-      final map = item.toJson(); // chuyển model thành Map
-      int count = 0;
-
-      for (var value in map.values) {
-        if (value.toString().contains(status.toString())) {
-          count++;
-        }
-      }
-      t+=count;
-    }
-    return t;
-  }
-
   goToErrorTableScreen(context) async {
-    if (listErrorNotConfirmModel?.data == null ||
-        listErrorNotConfirmModel!.data!.isEmpty) {
-      showDialogMessage(message: "Không có lỗi nào cần xác nhận");
-      return;
-    }
-    if (listErrorNotConfirmModel != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => ErrorStableScreen(
-            listErrorNotConfirmModel: listErrorNotConfirmModel!,
-          ),
-        ),
-      ).then((v) {
-        initData();
-      });
-    }
+    // if (listErrorNotConfirmModel?.data == null ||
+    //     listErrorNotConfirmModel!.data!.isEmpty) {
+    //   showDialogMessage(message: "Không có lỗi nào cần xác nhận");
+    //   return;
+    // }
+    // if (listErrorNotConfirmModel != null) {
+    //   Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (BuildContext context) => ErrorStableScreen(
+    //         listErrorNotConfirmModel: listErrorNotConfirmModel!,
+    //       ),
+    //     ),
+    //   ).then((v) {
+    //     initData();
+    //   });
+    // }
   }
 }

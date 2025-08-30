@@ -67,16 +67,17 @@ class _DropDownButtonState extends State<DropDownButton> {
   @override
   Widget build(BuildContext context) {
     // Biểu thức chính quy để tách chuỗi thành các phần
-    RegExp regExp = RegExp(r"^(.*)-(.*)-ERROR-(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})-(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})---(.*)-ID(\d+)$");
+    RegExp regExp = RegExp(r"^(.*)-(.*)-(.*)-(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})-(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})---(.*)-ID(\d+)$");
 
     // Tìm các phần tử khớp với biểu thức chính quy
     Match? match = regExp.firstMatch(widget.errorNotConfirmModel.content??"");
     String? line = match?.group(1)!; // line-location
     String? location = match?.group(2)!; // location
-    String? startTime = match?.group(3)!; // start time
-    String? endTime = match?.group(4)!; // end time
-    String? errorName = match?.group(5)!; // error name
-    String? id = match?.group(6)!; // ID
+    String? type = match?.group(3)!; // location
+    String? startTime = match?.group(4)!; // start time
+    String? endTime = match?.group(5)!; // end time
+    String? errorName = match?.group(6)!; // error name
+    String? id = match?.group(7)!; // ID
     return Container(
       margin: EdgeInsets.fromLTRB(0, 0, 0, 32.h),
       decoration: BoxDecoration(

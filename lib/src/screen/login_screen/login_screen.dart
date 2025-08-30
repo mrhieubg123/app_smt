@@ -1,3 +1,4 @@
+import '../../../src/screen/home_screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,10 +36,16 @@ class _LoginScreenState extends State<LoginScreen> {
     print('Mật khẩu: $password');
     dynamic result = await MachineStatusGetData().loginUser(email, password);
     if (result == true) {
+      // Navigator.push(
+      //   navigatorKey.currentContext!,
+      //   MaterialPageRoute(
+      //     builder: (BuildContext context) => MachineStatusApp(),
+      //   ),
+      // );
       Navigator.push(
         navigatorKey.currentContext!,
         MaterialPageRoute(
-          builder: (BuildContext context) => MachineStatusApp(),
+          builder: (BuildContext context) => HomeScreen(),
         ),
       );
     }

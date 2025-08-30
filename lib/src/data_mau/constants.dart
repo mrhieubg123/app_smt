@@ -11,6 +11,7 @@ class Constants {
   static String urlLogin = "api/v1/auth/login";
   static String urlRegister = "api/create";
   static String urlMachineStatus = "api/Machine/MachineStatus";
+  static String urlPickupRateStatus = "api/Machine/PickupRateStatus";
   static String urlGetListConfirm = "api/Machine/MachineErrorOver10m";
   static String urlErrorsByCode = "api/Machine/MachineStatusQueryParam";
   static String urlConfirmErrorDetail = "api/SmtMachineRouter/updateConfirmError";

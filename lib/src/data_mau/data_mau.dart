@@ -315,6 +315,97 @@ dynamic apiMachineMachineStatus = [
   },
 ];
 
+dynamic apiPickupRateStatus_example = [
+  {
+    "LINE_NAME": "Line_1F",
+    "BN3_H1": 99.92,
+    "BN3_H2": 99.95,
+    "BN3_H3": 99.92,
+    "BN3_H4": 99.98,
+    "BN3_H5": 99.91,
+    "BN3_H6": 99.96,
+    "BN3_G1": 99.94,
+    "BN3_G2": 99.98
+  },
+  {
+    "LINE_NAME": "Line_1R",
+    "BN3_H1": 99.94,
+    "BN3_H2": 99.85,
+    "BN3_H3": 99.96,
+    "BN3_H4": 99.95,
+    "BN3_H5": 99.87,
+    "BN3_H6": 99.96,
+    "BN3_G1": 99.87,
+    "BN3_G2": 99.64
+  },
+  {
+    "LINE_NAME": "Line_2F",
+    "BN3_H1": 99.9,
+    "BN3_H2": 99.96,
+    "BN3_H3": 99.99,
+    "BN3_H4": 99.95,
+    "BN3_H5": 99.85,
+    "BN3_H6": 99.95,
+    "BN3_G1": 99.93,
+    "BN3_G2": 99.88
+  },
+  {
+    "LINE_NAME": "Line_2R",
+    "BN3_H1": 99.91,
+    "BN3_H2": 99.97,
+    "BN3_H3": 99.98,
+    "BN3_H4": 99.95,
+    "BN3_H5": 99.79,
+    "BN3_H6": 99.98,
+    "BN3_G1": 99.83,
+    "BN3_G2": 99.7
+  },
+  {
+    "LINE_NAME": "Line_4F",
+    "BN3_H1": null,
+    "BN3_H2": null,
+    "BN3_H3": 99.99,
+    "BN3_H4": 99.98,
+    "BN3_H5": 99.97,
+    "BN3_H6": 99.99,
+    "BN3_G1": 99.93,
+    "BN3_G2": null
+  },
+  {
+    "LINE_NAME": "Line_4R",
+    "BN3_H1": null,
+    "BN3_H2": 99.98,
+    "BN3_H3": 99.99,
+    "BN3_H4": 99.93,
+    "BN3_H5": 99.88,
+    "BN3_H6": 99.96,
+    "BN3_G1": 99.09,
+    "BN3_G2": null
+  },
+  {
+    "LINE_NAME": "Line_5F",
+    "BN3_H1": 99.45,
+    "BN3_H2": 99.5,
+    "BN3_H3": 99.97,
+    "BN3_H4": 99.92,
+    "BN3_H5": 99.75,
+    "BN3_H6": null,
+    "BN3_G1": 99.94,
+    "BN3_G2": 99.29
+  },
+  {
+    "LINE_NAME": "Line_5R",
+    "BN3_H1": 100,
+    "BN3_H2": 94.38,
+    "BN3_H3": 99.92,
+    "BN3_H4": 99.89,
+    "BN3_H5": 99.97,
+    "BN3_H6": null,
+    "BN3_G1": 99.91,
+    "BN3_G2": null
+  }
+];
+
 dynamic getDataErrorCauseSolution_example = [
   {
     "error_code": "MACHINE",

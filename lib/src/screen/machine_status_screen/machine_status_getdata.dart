@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import '../../../core/model/error_cause_solution_model.dart';
 import '../../../core/model/machine_analysis_error_model.dart';
 import '../../../core/model/machine_status_model.dart';
-import '../../../core/model/machine_total_trend_model.dart';
+import '../../../core/model/pickup_rate_status_model.dart';
 import '../../../main.dart';
 import '../../../src/data_mau/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -111,8 +111,41 @@ class MachineStatusGetData {
     }
   }
 
+  Future getPickupRateStatus() async {
+    if (kDebugMode) {
+      return DataPickupRateStatusModel.fromJson({
+        "data": apiPickupRateStatus_example,
+      });
+    }
+    final dioPost = DioClient.instance;
+
+    try {
+      final response = await dioPost.get(Constants.urlPickupRateStatus);
+      // final response = await callApiThroughProxy(
+      //   url: myHost + Constants.urlMachineStatus,
+      // );
+      debugPrint(response.toString());
+      if (response.statusCode == 200 && response.data != null) {
+        return DataPickupRateStatusModel.fromJson({"data": response.data});
+      } else {
+        throw Exception('Lỗi server: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      showDialogMessage(message: e.response?.data['error']);
+      return false;
+    } catch (e) {
+      throw Exception('Lỗi khi gọi API: $e');
+    }
+  }
+
   getUniqueSortedLines(List<MachineStatusModel> machines) {
     final lines = machines.map((m) => m.line!).toSet().toList();
+    lines.sort(); // sắp xếp theo alphabet
+    return lines;
+  }
+
+  getUniqueSortedLinesPickupRate(List<PickupRateStatusModel>machines) {
+    final lines = machines.map((m) => m.lINENAME.toString()).toList();
     lines.sort(); // sắp xếp theo alphabet
     return lines;
   }
@@ -176,15 +209,17 @@ class MachineStatusGetData {
     final dioPost = DioClient.instance;
 
     try {
-      final response = await dioPost.post(
-        Constants.urlMachineAnalysisError,
-        data: body,
-      );
-      // final response = await callApiThroughProxy(
-      //   url: myHost + Constants.urlMachineAnalysisError,
-      //   method: "POST",
+      // final response = await dioPost.post(
+      //   Constants.urlMachineAnalysisError,
       //   data: body,
       // );
+      var dio = Dio();
+      var headers = {'Content-Type': 'application/json'};
+      var response = await dio.request(
+        'https://10.225.42.71:5000/${Constants.urlMachineAnalysisError}',
+        options: Options(method: 'POST', headers: headers),
+        data: body,
+      );
 
       // debugPrint(response.toString());
       if (response.statusCode == 200 && response.data != null) {
@@ -206,8 +241,15 @@ class MachineStatusGetData {
     final dioPost = DioClient.instance;
 
     try {
-      final response = await dioPost.post(
-        Constants.urlGetErrorDetail,
+      // final response = await dioPost.post(
+      //   Constants.urlGetErrorDetail,
+      //   data: body,
+      // );
+      var dio = Dio();
+      var headers = {'Content-Type': 'application/json'};
+      var response = await dio.request(
+        'https://10.225.42.71:5000/${Constants.urlGetErrorDetail}',
+        options: Options(method: 'POST', headers: headers),
         data: body,
       );
 
@@ -244,30 +286,6 @@ class MachineStatusGetData {
     }
   }
 
-  Future getMachineTotalTrend({required body}) async {
-    if (kDebugMode) {
-      return MachineTotalTrendModel.fromJson({"data": apiMachineTotalTrend});
-    }
-    final dioPost = DioClient.instance;
-
-    try {
-      final response = await dioPost.post(
-        Constants.urlMachineTotalTrend,
-        data: body,
-      );
-
-      // debugPrint(response.toString());
-      if (response.statusCode == 200 && response.data != null) {
-        return MachineTotalTrendModel.fromJson({"data": response.data});
-      }
-    } on DioException catch (e) {
-      showDialogMessage(message: e.response?.data['error']);
-      return;
-    } catch (e) {
-      showDialogMessage(message: 'Lỗi khi gọi API: $e');
-    }
-  }
-
   Future createConfirmError({required body}) async {
     final dioPost = DioClient.instance;
 
@@ -283,7 +301,7 @@ class MachineStatusGetData {
       );
 
       // debugPrint(response.toString());
-      if (response.statusCode == 200 && response.data != null) {
+      if (response.statusCode == 200) {
         showDialogMessage(message: response.data["message"]);
         return true;
       }
@@ -317,36 +335,11 @@ class MachineStatusGetData {
     }
   }
 
-  Future<bool> registerUser({
+  Future registerUser({
     required String name,
     required String cardId,
     required String password,
-  }) async {
-    try {
-      final dioPost = DioClient.instance;
-      final response = await dioPost.post(
-        Constants.urlRegister,
-        data: {"name": name, "password": password, "card_code": cardId},
-      );
-
-      if (response != null) {
-        showDialogMessage(
-          message: '✅ Tạo tài khoản thành công',
-          onOk: () {
-            Navigator.pop(navigatorKey.currentContext!);
-          },
-        );
-        return true;
-      }
-      return false;
-    } on DioException catch (e) {
-      showDialogMessage(message: e.response?.data['error']);
-      return false;
-    } catch (e) {
-      showDialogMessage(message: '❌ Dio Exception: $e');
-      return false;
-    }
-  }
+  }) async {}
 
   Future<bool> loginUser(String cardId, String password) async {
     try {
@@ -367,8 +360,8 @@ class MachineStatusGetData {
 
       if (response.statusCode == 200) {
         userId = cardId;
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', response.data['token']);
+        // final prefs = await SharedPreferences.getInstance();
+        // await prefs.setString('token', response.data['token']);
         print('✅ Đăng nhập thành công: $cardId');
         return true;
       }
