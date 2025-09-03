@@ -184,7 +184,7 @@ class PickupRateStatusTableLandscapeWidget extends StatelessWidget {
                         child: Column(
                           children: [
                             SizedBox(
-                              height: 72.h,
+                              height: 100.h,
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -195,7 +195,7 @@ class PickupRateStatusTableLandscapeWidget extends StatelessWidget {
                                       flex: 1,
                                       child: Center(
                                         child: buildLight(
-                                          radius: 72.r,
+                                          radius: 100.r,
                                           value: getMachineFromLineLocation(
                                             lineNames[lineIndex],
                                             columnNames[index],

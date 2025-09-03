@@ -32,7 +32,7 @@ class HomeScreen extends StatelessWidget {
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        padding: EdgeInsets.fromLTRB(36.w, kToolbarHeight + 48.h, 36.w, 0),
+        padding: EdgeInsets.fromLTRB(36.w, kToolbarHeight + 150.h, 36.w, 0),
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/background.jpg'),
@@ -56,9 +56,9 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.ballot_outlined, color: Colors.white, size: 300.h),
+                    Icon(Icons.ballot_outlined, color: Colors.white, size: 200.h),
                     Text(
-                      "SMT Machine Status",
+                      "SMT Machine\nStatus",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 36.sp,
@@ -83,7 +83,7 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.backpack_outlined, color: Colors.white, size: 300.h),
+                    Icon(Icons.backpack_outlined, color: Colors.white, size: 200.h),
                     Text(
                       "Pickup Rate \nStatus",
                       textAlign: TextAlign.center,

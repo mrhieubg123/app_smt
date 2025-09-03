@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import '../../../core/function/dio_function.dart';
 import '../../../core/model/error_cause_solution_model.dart';
 import '../../../core/model/machine_analysis_error_model.dart';
 import '../../../core/model/machine_status_model.dart';
@@ -21,68 +22,7 @@ class MachineStatusGetData {
   static String myHost = "http://10.225.41.205:3030/";
   static String otherHost = "https://10.225.42.71:5000/";
 
-  Future testPushProxy({dataBody}) async {
-    var headers = {'Content-Type': 'application/json'};
-    var data = json.encode(
-      dataBody ??
-          {
-            "method": "POST",
-            "url": "http://10.225.42.70:5000/api/login",
-            "headers": {
-              "Accept-Encoding": "gzip, deflate, br",
-              "Content-Type": "application/json",
-            },
-            "data": {"card_code": "V3241419", "password": "123456"},
-          },
-    );
-    var dio = Dio();
-    var response = await dio.request(
-      'https://10.225.42.71:5000/api/proxy-api',
-      options: Options(method: 'POST', headers: headers),
-      data: data,
-    );
 
-    if (response.statusCode == 200) {
-      return response;
-      showDialogMessage(message: json.encode(response.data));
-      print(json.encode(response.data));
-    } else {
-      showDialogMessage(message: response.statusMessage);
-      print(response.statusMessage);
-    }
-  }
-
-  Future callApiThroughProxy({url, method, header, data}) async {
-    final dioPost = DioClient.instance;
-
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
-    Map<String, dynamic> headers = {
-      "Accept-Encoding": "gzip, deflate, br",
-      "Content-Type": "application/json",
-    };
-    if (token != null) {
-      headers['Authorization'] = 'Bearer $token';
-    }
-
-    final proxyRequestBody = {
-      // "url": dioPost.options.baseUrl + url, // URL thật bạn muốn gọi
-      "url": url, // URL thật bạn muốn gọi
-      "method": method ?? "GET",
-      "data": data ?? {}, // Có thể là {} hoặc dữ liệu cho POST
-      "headers": headers,
-    };
-
-    try {
-      final Response response = await testPushProxy(dataBody: proxyRequestBody);
-      return response;
-    } on DioException catch (e) {
-      showDialogMessage(message: '❌ Lỗi proxy: $e');
-    } catch (e) {
-      showDialogMessage(message: "❌ Lỗi khi gọi proxy: $e");
-    }
-    return;
-  }
 
   Future getMachineStatus() async {
     if (kDebugMode) {
@@ -111,40 +51,13 @@ class MachineStatusGetData {
     }
   }
 
-  Future getPickupRateStatus() async {
-    if (kDebugMode) {
-      return DataPickupRateStatusModel.fromJson({
-        "data": apiPickupRateStatus_example,
-      });
-    }
-    final dioPost = DioClient.instance;
-
-    try {
-      final response = await dioPost.get(Constants.urlPickupRateStatus);
-      // final response = await callApiThroughProxy(
-      //   url: myHost + Constants.urlMachineStatus,
-      // );
-      debugPrint(response.toString());
-      if (response.statusCode == 200 && response.data != null) {
-        return DataPickupRateStatusModel.fromJson({"data": response.data});
-      } else {
-        throw Exception('Lỗi server: ${response.statusCode}');
-      }
-    } on DioException catch (e) {
-      showDialogMessage(message: e.response?.data['error']);
-      return false;
-    } catch (e) {
-      throw Exception('Lỗi khi gọi API: $e');
-    }
-  }
-
   getUniqueSortedLines(List<MachineStatusModel> machines) {
     final lines = machines.map((m) => m.line!).toSet().toList();
     lines.sort(); // sắp xếp theo alphabet
     return lines;
   }
 
-  getUniqueSortedLinesPickupRate(List<PickupRateStatusModel>machines) {
+  getUniqueSortedLinesPickupRate(List<PickupRateStatusModel> machines) {
     final lines = machines.map((m) => m.lINENAME.toString()).toList();
     lines.sort(); // sắp xếp theo alphabet
     return lines;
@@ -160,7 +73,7 @@ class MachineStatusGetData {
 
     try {
       // final response = await dioPost.get(Constants.urlGetErrorNotConfirm);
-      final response = await callApiThroughProxy(
+      final response = await DioFunction().callApiThroughProxy(
         url: myHost + Constants.urlGetErrorNotConfirm,
       );
       debugPrint(response.toString());
@@ -184,7 +97,7 @@ class MachineStatusGetData {
 
     try {
       // final response = await dioPost.get(Constants.urlGetDataErrorCauseSolution);
-      final response = await callApiThroughProxy(
+      final response = await DioFunction().callApiThroughProxy(
         url: myHost + Constants.urlGetDataErrorCauseSolution,
       );
       debugPrint(response.toString());
@@ -197,7 +110,6 @@ class MachineStatusGetData {
       showDialogMessage(message: 'Lỗi khi gọi API: $e');
     }
   }
-
 
   Future getMachineAnalysisError({required body}) async {
     if (kDebugMode) {
@@ -213,11 +125,16 @@ class MachineStatusGetData {
       //   Constants.urlMachineAnalysisError,
       //   data: body,
       // );
-      var dio = Dio();
-      var headers = {'Content-Type': 'application/json'};
-      var response = await dio.request(
-        'https://10.225.42.71:5000/${Constants.urlMachineAnalysisError}',
-        options: Options(method: 'POST', headers: headers),
+      // var dio = Dio();
+      // var headers = {'Content-Type': 'application/json'};
+      // var response = await dio.request(
+      //   'https://10.225.42.71:5000/${Constants.urlMachineAnalysisError}',
+      //   options: Options(method: 'POST', headers: headers),
+      //   data: body,
+      // );
+      final response = await DioFunction().callApiThroughProxy(
+        url: otherHost + Constants.urlMachineAnalysisError,
+        method: "POST",
         data: body,
       );
 
@@ -245,11 +162,16 @@ class MachineStatusGetData {
       //   Constants.urlGetErrorDetail,
       //   data: body,
       // );
-      var dio = Dio();
-      var headers = {'Content-Type': 'application/json'};
-      var response = await dio.request(
-        'https://10.225.42.71:5000/${Constants.urlGetErrorDetail}',
-        options: Options(method: 'POST', headers: headers),
+      // var dio = Dio();
+      // var headers = {'Content-Type': 'application/json'};
+      // var response = await dio.request(
+      //   'https://10.225.42.71:5000/${Constants.urlGetErrorDetail}',
+      //   options: Options(method: 'POST', headers: headers),
+      //   data: body,
+      // );
+      final response = await DioFunction().callApiThroughProxy(
+        url: otherHost + Constants.urlErrorsByCode,
+        method: "POST",
         data: body,
       );
 
@@ -294,7 +216,7 @@ class MachineStatusGetData {
       //   Constants.urlConfirmErrorDetail,
       //   data: body,
       // );
-      final response = await callApiThroughProxy(
+      final response = await DioFunction().callApiThroughProxy(
         url: myHost + Constants.urlConfirmErrorDetail,
         method: "POST",
         data: body,
@@ -318,7 +240,7 @@ class MachineStatusGetData {
 
     try {
       // final response = await dioPost.post(Constants.urlAddError, data: body);
-      final response = await callApiThroughProxy(
+      final response = await DioFunction().callApiThroughProxy(
         url: myHost + Constants.urlAddError,
         method: "POST",
         data: body,

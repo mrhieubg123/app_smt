@@ -12,6 +12,7 @@ import '../../data_mau/constants.dart';
 import '../machine_status_screen/machine_status_getdata.dart';
 import '../maintenance_information_screen/maintenance_information_screen.dart';
 import 'widget/error_detail_widget.dart';
+import 'package:intl/intl.dart';
 
 class MachineDetailScreen extends StatefulWidget {
   final MachineStatusModel machine;
@@ -76,23 +77,16 @@ class _MachineDetailScreenState extends State<MachineDetailScreen> {
   List? listPercentError = [];
 
   getData() async {
-    debugPrint(
-      {
-        "arr": ["${widget.machine.line}-${widget.name}"],
-        "dateFrom": DateTime.now().subtract(
-          Duration(days: indexFilter == 0 ? 7 : 30),
-        ),
-        "dateTo": DateTime.now(),
-      }.toString(),
-    );
     machineAnalysisErrorModel = await MachineStatusGetData()
         .getMachineAnalysisError(
           body: {
             "arr": ["${widget.machine.line}-${widget.name}"],
-            "dateFrom": DateTime.now().subtract(
-              Duration(days: indexFilter == 0 ? 7 : 30),
+            "dateFrom": DateFormat('yyyy-MM-dd HH:mm:ss').format(
+              DateTime.now().subtract(
+                Duration(days: indexFilter == 0 ? 7 : 30),
+              ),
             ),
-            "dateTo": DateTime.now(),
+            "dateTo": DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
           },
         );
     machineAnalysisErrorModel?.data?.sort(
@@ -105,8 +99,15 @@ class _MachineDetailScreenState extends State<MachineDetailScreen> {
     listPercentError = machineAnalysisErrorModel?.data
         ?.map((e) => ((e.totalTime ?? 0) / sumErrorTime! * 100).round())
         .toList();
+    setState(() {});
     final infoM = widget.machine.toJson()[widget.name];
     if (infoM.toString().contains("ERROR")) {
+      debugPrint(
+        {
+          "typeParam": "Error",
+          "param": infoM.toString().split("-")[1],
+        }.toString(),
+      );
       errorDetailTotalModel = await MachineStatusGetData().getErrorDetail(
         body: {"typeParam": "Error", "param": infoM.toString().split("-")[1]},
       );

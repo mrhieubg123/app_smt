@@ -1,11 +1,16 @@
 import 'dart:async';
+import 'package:app_smt/src/screen/pickup_rate_status_screen/error_pickup_table_screen/error_pickup_table_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../core/model/pickup_rate_abnormal_handle_model.dart';
 import '../../../core/model/pickup_rate_status_model.dart';
+import '../../../core/widget/dialog.dart';
 import '../../../src/screen/machine_status_screen/machine_status_getdata.dart';
-import 'widget/machine_status_table_widget.dart';
-import 'widget/machine_status_table_landscape_widget.dart';
+import '../../repositories/pickup_rate/pickuprate_repository_impl.dart';
+import 'pickup_rate_analysis_screen/pickup_rate_analysis_screen.dart';
+import 'widget/pickup_rate_status_table_widget.dart';
+import 'widget/pickup_rate_status_table_landscape_widget.dart';
 
 class PickupRateStatusStatusApp extends StatefulWidget {
   const PickupRateStatusStatusApp({super.key});
@@ -17,6 +22,8 @@ class PickupRateStatusStatusApp extends StatefulWidget {
 
 class _PickupRateStatusStatusAppState extends State<PickupRateStatusStatusApp> {
   DataPickupRateStatusModel? dataPickupRateStatusModel;
+  PickupRateAbnormalHandleModel? pickupRateAbnormalHandleModel;
+  List<DataAbnormal> listDataAbnormal = [];
   List<String> listLine = [];
   List<String> listLocation = [];
   Timer? _timer;
@@ -42,7 +49,7 @@ class _PickupRateStatusStatusAppState extends State<PickupRateStatusStatusApp> {
   }
 
   Future initData() async {
-    dataPickupRateStatusModel = await MachineStatusGetData()
+    dataPickupRateStatusModel = await PickupRateRepositoryImpl()
         .getPickupRateStatus();
     if (dataPickupRateStatusModel?.data != null) {
       listLine = MachineStatusGetData().getUniqueSortedLinesPickupRate(
@@ -63,18 +70,29 @@ class _PickupRateStatusStatusAppState extends State<PickupRateStatusStatusApp> {
     setState(() {});
   }
 
+  Future initDataListConfirm() async {
+    pickupRateAbnormalHandleModel = await PickupRateRepositoryImpl()
+        .getDataPickupRateAbnormalHandle();
+    final lst = pickupRateAbnormalHandleModel?.dataAbnormal ?? [];
+    setState(() {
+      listDataAbnormal = lst
+          .where((e) => e.eMPConfirm == null || e.eMPConfirm == "")
+          .toList();
+    });
+  }
+
   initCountStatus() {
-    countStatus = [0,0,0,0];
+    countStatus = [0, 0, 0, 0];
     for (PickupRateStatusModel item
         in (dataPickupRateStatusModel?.data ?? [])) {
       final map = item.toJson(); // chuyển model thành Map
       for (var value in map.values) {
-        if (value.toString().contains("_") ) continue;
+        if (value.toString().contains("_")) continue;
         if (value == null) {
           countStatus[3]++;
         } else if (value >= specStatus[0]) {
           countStatus[0]++;
-        } else if (value >= specStatus[1]&&value < specStatus[0]) {
+        } else if (value >= specStatus[1] && value < specStatus[0]) {
           countStatus[1]++;
         } else {
           countStatus[2]++;
@@ -85,10 +103,12 @@ class _PickupRateStatusStatusAppState extends State<PickupRateStatusStatusApp> {
 
   startPollingData() async {
     await initData();
+    await initDataListConfirm();
     debugPrint("🕒 Gọi data lần đầu:");
     // Đặt hẹn giờ gọi lại mỗi 5 phút
-    _timer = Timer.periodic(Duration(seconds: 20), (Timer t) async {
+    _timer = Timer.periodic(Duration(seconds: 30), (Timer t) async {
       await initData();
+      await initDataListConfirm();
       debugPrint("🕒 Cập nhật mỗi 5 phút:");
     });
   }
@@ -149,29 +169,80 @@ class _PickupRateStatusStatusAppState extends State<PickupRateStatusStatusApp> {
                 machines: dataPickupRateStatusModel?.data ?? [],
               ),
             ),
-            // InkWell(
-            //   onTap: () => goToErrorTableScreen(context),
-            //   child: Stack(
-            //     alignment: Alignment.topRight,
-            //     children: [
-            //       Container(
-            //         margin: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
-            //         padding: EdgeInsets.symmetric(
-            //           vertical: 24.h,
-            //           horizontal: 32.w,
-            //         ),
-            //         decoration: BoxDecoration(
-            //           color: Colors.blueAccent,
-            //           borderRadius: BorderRadius.circular(32.r),
-            //         ),
-            //         child: Text(
-            //           "Confirm",
-            //           style: TextStyle(color: Colors.white, fontSize: 48.sp),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                  onTap: () => goToAnalysisScreen(context),
+                  child: Stack(
+                    alignment: Alignment.topRight,
+                    children: [
+                      Container(
+                        width: 1.sw / 2 - 32.w,
+                        margin: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 24.h,
+                          horizontal: 32.w,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.blueAccent,
+                          borderRadius: BorderRadius.circular(32.r),
+                        ),
+                        child: Text(
+                          "View Analysis",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 48.sp,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                InkWell(
+                  onTap: () => goToErrorTableScreen(context),
+                  child: Stack(
+                    alignment: Alignment.topRight,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 24.h,
+                          horizontal: 32.w,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.blueAccent,
+                          borderRadius: BorderRadius.circular(32.r),
+                        ),
+                        child: Text(
+                          "Confirm",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 48.sp,
+                          ),
+                        ),
+                      ),
+                      if (listDataAbnormal.isNotEmpty)
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: CircleAvatar(
+                            radius: 32.r,
+                            backgroundColor: Colors.red,
+                            child: Text(
+                              listDataAbnormal.length.toString(),
+                              style: TextStyle(
+                                fontSize: 32.sp,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -189,6 +260,42 @@ class _PickupRateStatusStatusAppState extends State<PickupRateStatusStatusApp> {
           child: Icon(Icons.arrow_back, size: 64.h, color: Colors.white),
         ),
         actions: [
+          InkWell(
+            onTap: () => goToErrorTableScreen(context),
+            child: Stack(
+              // alignment: Alignment.bottomCenter,
+              children: [
+                Container(
+                  margin: EdgeInsets.fromLTRB(0, 12.h, 12.w, 0),
+                  padding: EdgeInsets.symmetric(
+                    vertical: 16.h,
+                    horizontal: 16.w,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.blueAccent,
+                    borderRadius: BorderRadius.circular(32.r),
+                  ),
+                  child: Text(
+                    "Confirm",
+                    style: TextStyle(color: Colors.white, fontSize: 24.sp),
+                  ),
+                ),
+                if (listDataAbnormal.isNotEmpty)
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: CircleAvatar(
+                      radius: 42.r,
+                      backgroundColor: Colors.red,
+                      child: Text(
+                        listDataAbnormal.length.toString(),
+                        style: TextStyle(fontSize: 20.sp, color: Colors.white),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
           buildStatusStatsLandscapeWidget(),
         ],
       ),
@@ -203,7 +310,7 @@ class _PickupRateStatusStatusAppState extends State<PickupRateStatusStatusApp> {
         ),
         child: Column(
           children: [
-            SizedBox(height: kToolbarHeight + 100.h),
+            SizedBox(height: kToolbarHeight + 130.h),
             Flexible(
               child: PickupRateStatusTableLandscapeWidget(
                 lineNames: listLine,
@@ -446,22 +553,28 @@ class _PickupRateStatusStatusAppState extends State<PickupRateStatusStatusApp> {
   }
 
   goToErrorTableScreen(context) async {
-    // if (listErrorNotConfirmModel?.data == null ||
-    //     listErrorNotConfirmModel!.data!.isEmpty) {
-    //   showDialogMessage(message: "Không có lỗi nào cần xác nhận");
-    //   return;
-    // }
-    // if (listErrorNotConfirmModel != null) {
-    //   Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (BuildContext context) => ErrorStableScreen(
-    //         listErrorNotConfirmModel: listErrorNotConfirmModel!,
-    //       ),
-    //     ),
-    //   ).then((v) {
-    //     initData();
-    //   });
-    // }
+    if (listDataAbnormal.isEmpty) {
+      showDialogMessage(message: "Không có lỗi nào cần xác nhận");
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) =>
+            ErrorPickupTableScreen(listDataAbnormal: listDataAbnormal!),
+      ),
+    ).then((v) {
+      initData();
+    });
+  }
+
+  goToAnalysisScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => PickupRateAnalysisScreen(data: []),
+      ),
+    );
   }
 }

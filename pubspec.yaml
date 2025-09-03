@@ -42,6 +42,7 @@ dependencies:
   shared_preferences:
   permission_handler: ^12.0.1
   image_picker: ^1.1.2
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
