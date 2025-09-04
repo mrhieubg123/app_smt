@@ -288,7 +288,7 @@ class MachineStatusGetData {
         return true;
       }
     } on DioException catch (e) {
-      showDialogMessage(message: e.response?.data['msg']);
+      showDialogMessage(message: e.response?.data.toString());
     } catch (e) {
       showDialogMessage(message: '❌ Lỗi không xác định: $e');
     }

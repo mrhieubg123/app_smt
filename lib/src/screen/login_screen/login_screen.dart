@@ -32,8 +32,8 @@ class _LoginScreenState extends State<LoginScreen> {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
-    print('Email: $email');
-    print('Mật khẩu: $password');
+    // print('Email: $email');
+    // print('Mật khẩu: $password');
     dynamic result = await MachineStatusGetData().loginUser(email, password);
     if (result == true) {
       // Navigator.push(
@@ -116,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     backgroundColor: Colors.blueAccent,
                     minimumSize: Size(double.infinity, 96.h),
                   ),
-                  child: Text('Đăng nhập',style: TextStyle(color: Colors.white)),
+                  child: Text('Login',style: TextStyle(color: Colors.white)),
                 ),
                 SizedBox(height: 48.h),
                 // InkWell(
