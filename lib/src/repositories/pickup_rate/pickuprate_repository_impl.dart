@@ -64,7 +64,7 @@ class PickupRateRepositoryImpl implements PickupRateRepository {
         throw Exception('Lỗi server: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      showDialogMessage(message: e.response?.data['error']);
+      showDialogMessage(message: e.response?.data['msg']);
       return false;
     } catch (e) {
       throw Exception('Lỗi khi gọi API: $e');
@@ -144,7 +144,7 @@ class PickupRateRepositoryImpl implements PickupRateRepository {
         return true;
       }
     } on DioException catch (e) {
-      showDialogMessage(message: e.response?.data['error']);
+      showDialogMessage(message: e.response?.data['msg']);
       return;
     } catch (e) {
       showDialogMessage(message: 'Lỗi khi gọi API: $e');

@@ -44,7 +44,7 @@ class MachineStatusGetData {
         throw Exception('Lỗi server: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      showDialogMessage(message: e.response?.data['error']);
+      showDialogMessage(message: e.response?.data['msg']);
       return false;
     } catch (e) {
       throw Exception('Lỗi khi gọi API: $e');
@@ -143,7 +143,7 @@ class MachineStatusGetData {
         return MachineAnalysisErrorModel.fromJson({"data": response.data});
       }
     } on DioException catch (e) {
-      showDialogMessage(message: e.response?.data['error']);
+      showDialogMessage(message: e.response?.data['msg']);
       return false;
     } catch (e) {
       showDialogMessage(message: 'Lỗi khi gọi API: $e');
@@ -180,7 +180,7 @@ class MachineStatusGetData {
         return ErrorDetailTotalModel.fromJson({"data": response.data});
       }
     } on DioException catch (e) {
-      showDialogMessage(message: e.response?.data['error']);
+      showDialogMessage(message: e.response?.data['msg']);
       return;
     } catch (e) {
       showDialogMessage(message: 'Lỗi khi gọi API: $e');
@@ -224,11 +224,11 @@ class MachineStatusGetData {
 
       // debugPrint(response.toString());
       if (response.statusCode == 200) {
-        showDialogMessage(message: response.data["message"]);
+        showDialogMessage(message: response.data["msg"]);
         return true;
       }
     } on DioException catch (e) {
-      showDialogMessage(message: e.response?.data['error']);
+      showDialogMessage(message: e.response?.data['msg']);
       return;
     } catch (e) {
       showDialogMessage(message: 'Lỗi khi gọi API: $e');
@@ -250,7 +250,7 @@ class MachineStatusGetData {
         return true;
       }
     } on DioException catch (e) {
-      showDialogMessage(message: e.response?.data['error']);
+      showDialogMessage(message: e.response?.data['msg']);
       return;
     } catch (e) {
       showDialogMessage(message: 'Lỗi khi gọi API: $e');
@@ -288,7 +288,7 @@ class MachineStatusGetData {
         return true;
       }
     } on DioException catch (e) {
-      showDialogMessage(message: e.response?.data['error']);
+      showDialogMessage(message: e.response?.data['msg']);
     } catch (e) {
       showDialogMessage(message: '❌ Lỗi không xác định: $e');
     }
