@@ -70,7 +70,7 @@ class _PickupRateAnalysisScreenState extends State<PickupRateAnalysisScreen> {
     }
     List<Map<String, dynamic>> finalList = slotMap.values.toList();
     finalList.sort((a, b) => (b['value'] as num).compareTo(a['value'] as num));
-    return finalList.take(10).toList();
+    return finalList.take(20).toList();
   }
 
   @override
@@ -121,7 +121,7 @@ class _PickupRateAnalysisScreenState extends State<PickupRateAnalysisScreen> {
             child: AspectRatio(
               aspectRatio: 2.2,
               child: Padding(
-                padding: EdgeInsets.fromLTRB(16.w, 96.h, 48.w, 0),
+                padding: EdgeInsets.fromLTRB(16.w, 96.h, 16.w, 0),
                 child: BarChart(
                   BarChartData(
                     alignment: BarChartAlignment.spaceBetween,
@@ -134,11 +134,11 @@ class _PickupRateAnalysisScreenState extends State<PickupRateAnalysisScreen> {
                           8,
                         ), // Dùng tooltipBorderRadius
                         getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                          final name = sampleData[group.x.toInt()]['name'];
                           return BarTooltipItem(
                             (rod.toY.round()).toString(),
                             TextStyle(
                               color: Colors.white,
+                              fontSize: 8.sp,
                               fontWeight: FontWeight.bold,
                             ),
                             // children: <TextSpan>[
@@ -186,8 +186,8 @@ class _PickupRateAnalysisScreenState extends State<PickupRateAnalysisScreen> {
                             return Text(
                               sampleData[idx]['name'],
                               style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16.sp,
+                                // fontWeight: FontWeight.bold,
+                                fontSize: 8.sp,
                                 color: Colors.white,
                               ),
                             );

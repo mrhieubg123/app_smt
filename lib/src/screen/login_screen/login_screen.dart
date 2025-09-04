@@ -116,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     backgroundColor: Colors.blueAccent,
                     minimumSize: Size(double.infinity, 96.h),
                   ),
-                  child: Text('Đăng nhập'),
+                  child: Text('Đăng nhập',style: TextStyle(color: Colors.white)),
                 ),
                 SizedBox(height: 48.h),
                 // InkWell(
