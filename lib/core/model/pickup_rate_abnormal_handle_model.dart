@@ -50,9 +50,11 @@ class DataAbnormal {
   String? eMPConfirm;
   dynamic confirm;
   String? rowNum;
+  String? ID_tuan;
 
   DataAbnormal(
       {this.iD,
+        this.ID_tuan,
         this.dateT,
         this.timeT,
         this.lINENAME,
@@ -72,6 +74,7 @@ class DataAbnormal {
 
   DataAbnormal.fromJson(Map<String, dynamic> json) {
     iD = json['ID'];
+    ID_tuan = json['ID_tuan'];
     dateT = json['DateT'];
     timeT = json['TimeT'];
     lINENAME = json['LINE_NAME'];
@@ -93,6 +96,7 @@ class DataAbnormal {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['ID'] = iD;
+    data['ID_tuan'] = ID_tuan;
     data['DateT'] = dateT;
     data['TimeT'] = timeT;
     data['LINE_NAME'] = lINENAME;

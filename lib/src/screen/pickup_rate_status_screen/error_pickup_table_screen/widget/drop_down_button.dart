@@ -5,6 +5,7 @@ import '../../../../../core/model/error_cause_solution_model.dart';
 import '../../../../../core/model/error_detail_model.dart';
 import '../../../../../core/model/pickup_rate_abnormal_handle_model.dart';
 import '../../../../../core/widget/dialog.dart';
+import '../../../../repositories/pickup_rate/pickuprate_repository_impl.dart';
 import '../../../machine_status_screen/machine_status_getdata.dart';
 
 class DropDownButton extends StatefulWidget {
@@ -494,9 +495,10 @@ class _DropDownButtonState extends State<DropDownButton> {
     //     ?.firstWhere(
     //       (e) => (e.cause == nguyenNhan?.cause && e.solution == giaiPhap),
     //     );
-    dynamic result = await MachineStatusGetData().createConfirmError(
+    dynamic result = await PickupRateRepositoryImpl().updateConfirmErrorPickup(
       body: {
-        "IDD": widget.dataAbnormal.iD,
+        "ID": widget.dataAbnormal.iD,
+        "IDD": widget.dataAbnormal.ID_tuan,
         "user": MachineStatusGetData.userId,
         "root": nguyenNhan?.cause,
         "act": giaiPhap,
@@ -517,6 +519,7 @@ class _DropDownButtonState extends State<DropDownButton> {
         body: {
           "cause": result[0],
           "solution": result[1],
+          "type": "PICKUP_RATE"
         },
       );
       if (resultApi == true) {
@@ -539,6 +542,7 @@ class _DropDownButtonState extends State<DropDownButton> {
         body: {
           "cause": nguyenNhan?.cause,
           "solution": result[0],
+          "type": "PICKUP_RATE"
         },
       );
       if (resultApi == true) {

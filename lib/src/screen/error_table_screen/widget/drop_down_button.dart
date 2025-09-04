@@ -534,6 +534,7 @@ class _DropDownButtonState extends State<DropDownButton> {
         body: {
           "cause": result[0],
           "solution": result[1],
+          "type": "MACHINE"
         },
       );
       if (resultApi == true) {
@@ -556,6 +557,7 @@ class _DropDownButtonState extends State<DropDownButton> {
         body: {
           "cause": nguyenNhan?.cause,
           "solution": result[0],
+          "type": "MACHINE"
         },
       );
       if (resultApi == true) {

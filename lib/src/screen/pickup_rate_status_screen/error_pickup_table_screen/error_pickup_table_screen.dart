@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/model/error_cause_solution_model.dart';
 import '../../../../core/model/pickup_rate_abnormal_handle_model.dart';
-import '../../machine_status_screen/machine_status_getdata.dart';
+import '../../../repositories/pickup_rate/pickuprate_repository_impl.dart';
 import 'widget/drop_down_button.dart';
 
 class ErrorPickupTableScreen extends StatefulWidget {
@@ -27,8 +27,8 @@ class _ErrorPickupTableScreenState extends State<ErrorPickupTableScreen> {
   }
 
   Future initData() async {
-    dataErrorCauseSolutionModel = await MachineStatusGetData()
-        .getDataErrorCauseSolution();
+    dataErrorCauseSolutionModel = await PickupRateRepositoryImpl()
+        .getDataErrorCauseSolutionPickup();
     setState(() {});
   }
 

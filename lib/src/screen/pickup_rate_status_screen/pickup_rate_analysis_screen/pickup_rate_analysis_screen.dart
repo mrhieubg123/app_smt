@@ -54,15 +54,16 @@ class _PickupRateAnalysisScreenState extends State<PickupRateAnalysisScreen> {
     final Map<String, Map<String, dynamic>> slotMap = {};
 
     for (var item in data) {
-      final cause = item.sLOTNO;
+      final cause =
+          "${(item.lM ?? "").replaceAll("ine_", "").replaceAll("-", "")}\n${item.sLOTNO ?? ""}";
 
       if (slotMap.containsKey(cause)) {
         slotMap[cause]!['value'] += double.parse(
           (item.fAILQTY ?? 0).toString(),
         );
       } else {
-        slotMap[cause!] = {
-          "name": item.sLOTNO,
+        slotMap[cause] = {
+          "name": cause,
           "value": double.parse((item.fAILQTY ?? 0).toString()),
         };
       }
@@ -120,7 +121,7 @@ class _PickupRateAnalysisScreenState extends State<PickupRateAnalysisScreen> {
             child: AspectRatio(
               aspectRatio: 2.2,
               child: Padding(
-                padding: EdgeInsets.fromLTRB(16.w, 96.h, 48.w, 32.h),
+                padding: EdgeInsets.fromLTRB(16.w, 96.h, 48.w, 0),
                 child: BarChart(
                   BarChartData(
                     alignment: BarChartAlignment.spaceBetween,
@@ -162,6 +163,7 @@ class _PickupRateAnalysisScreenState extends State<PickupRateAnalysisScreen> {
                           getTitlesWidget: (value, meta) {
                             return Text(
                               value.toInt().toString(),
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 color: Colors.white,
@@ -175,6 +177,7 @@ class _PickupRateAnalysisScreenState extends State<PickupRateAnalysisScreen> {
                       bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
                           showTitles: true,
+                          reservedSize: 42.w,
                           getTitlesWidget: (value, meta) {
                             final idx = value.toInt();
                             if (idx < 0 || idx >= sampleData.length) {
@@ -209,10 +212,7 @@ class _PickupRateAnalysisScreenState extends State<PickupRateAnalysisScreen> {
                             width: 24.w,
                             borderRadius: BorderRadius.circular(24.r),
                             gradient: LinearGradient(
-                              colors: [
-                                Colors.red,
-                                Colors.redAccent,
-                              ],
+                              colors: [Colors.red, Colors.redAccent],
                               begin: Alignment.bottomCenter,
                               end: Alignment.topCenter,
                             ),

@@ -16,6 +16,8 @@ class Constants {
   static String urlErrorsByCode = "api/Machine/MachineStatusQueryParam";
   static String urlConfirmErrorDetail =
       "api/SmtMachineRouter/updateConfirmError";
+  static String urlUpdateConfirmPickupRate =
+      "api/SmtMachineRouter/updateConfirmPickupRate";
   static String urlGetErrorDetail = "api/get_error_detail";
   static String urlAddError = "api/SmtMachineRouter/addCauseSolution";
   static String urlUploadErrorImage = "api/upload_error_image";
@@ -29,6 +31,8 @@ class Constants {
       "api/SmtMachineRouter/getMachineAnalysisError";
   static String urlGetDataErrorCauseSolution =
       "api/SmtMachineRouter/getDataErrorCauseSolution";
+  static String urlGetDataErrorCauseSolutionPickup =
+      "api/SmtMachineRouter/getDataErrorCauseSolutionPickup";
   static String urlGetDataPickupRateAbnormalHandle =
       "api/Machine/PickupRateAbnormalHandle";
   static String urlGetDataPickupRateAnalysisByDay =

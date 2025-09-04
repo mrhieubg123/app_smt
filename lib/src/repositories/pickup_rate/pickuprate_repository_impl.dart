@@ -3,6 +3,7 @@ import 'package:app_smt/core/model/pickup_rate_analysis_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../../core/model/error_cause_solution_model.dart';
 import '../../../core/model/pickup_rate_abnormal_handle_model.dart';
 import '../../../core/model/pickup_rate_status_model.dart';
 import '../../../core/widget/dialog.dart';
@@ -58,7 +59,7 @@ class PickupRateRepositoryImpl implements PickupRateRepository {
       );
       debugPrint(response.toString());
       if (response.statusCode == 200 && response.data != null) {
-        return PickupRateAbnormalHandleModel.fromJson(response.data);
+        return PickupRateAnalysisByDayModel.fromJson(response.data);
       } else {
         throw Exception('Lỗi server: ${response.statusCode}');
       }
@@ -101,6 +102,52 @@ class PickupRateRepositoryImpl implements PickupRateRepository {
       return false;
     } catch (e) {
       throw Exception('Lỗi khi gọi API: $e');
+    }
+  }
+
+  @override
+  Future getDataErrorCauseSolutionPickup() async {
+    if (kDebugMode) {
+      return DataErrorCauseSolutionModel.fromJson({
+        "data": api_getDataErrorCauseSolutionPickup_example,
+      });
+    }
+
+    try {
+      final response = await DioFunction().callApiThroughProxy(
+        url: myHost + Constants.urlGetDataErrorCauseSolutionPickup,
+      );
+      debugPrint(response.toString());
+      if (response.statusCode == 200 && response.data != null) {
+        return DataErrorCauseSolutionModel.fromJson({"data": response.data});
+      } else {
+        showDialogMessage(message: 'Lỗi server: ${response.statusCode}');
+      }
+    } catch (e) {
+      showDialogMessage(message: 'Lỗi khi gọi API: $e');
+    }
+  }
+
+  @override
+  Future updateConfirmErrorPickup({required body}) async {
+
+    try {
+      final response = await DioFunction().callApiThroughProxy(
+        url: myHost + Constants.urlUpdateConfirmPickupRate,
+        method: "POST",
+        data: body,
+      );
+
+      // debugPrint(response.toString());
+      if (response.statusCode == 200) {
+        showDialogMessage(message: response.data["message"]);
+        return true;
+      }
+    } on DioException catch (e) {
+      showDialogMessage(message: e.response?.data['error']);
+      return;
+    } catch (e) {
+      showDialogMessage(message: 'Lỗi khi gọi API: $e');
     }
   }
 }
