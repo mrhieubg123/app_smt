@@ -44,22 +44,17 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
 
   Future initData() async {
     listMachineStatusModel = await MachineStatusGetData().getMachineStatus();
-    if (listMachineStatusModel?.data != null) {
+    if (listMachineStatusModel?.data != null &&
+        listMachineStatusModel!.data!.isNotEmpty) {
       listLine = MachineStatusGetData().getUniqueSortedLines(
         listMachineStatusModel!.data!,
       );
-      listLocation = [
-        "PRINTER",
-        "H1",
-        "H2",
-        "H3",
-        "H4",
-        "H5",
-        "H6",
-        "H7",
-        "H8",
-        "REFLOW",
-      ];
+      listLocation = listMachineStatusModel!.data![0]
+          .toJson()
+          .keys
+          .toList()
+          .skip(1)
+          .toList();
     }
     listErrorNotConfirmModel = await MachineStatusGetData().getListConfirm();
     setState(() {});
@@ -492,7 +487,7 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
   }
 
   getCountStatus(status) {
-    int t =0;
+    int t = 0;
     for (MachineStatusModel item in (listMachineStatusModel?.data ?? [])) {
       final map = item.toJson(); // chuyển model thành Map
       int count = 0;
@@ -502,7 +497,7 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
           count++;
         }
       }
-      t+=count;
+      t += count;
     }
     return t;
   }
@@ -519,6 +514,7 @@ class _MachineStatusAppState extends State<MachineStatusApp> {
         MaterialPageRoute(
           builder: (BuildContext context) => ErrorStableScreen(
             listErrorNotConfirmModel: listErrorNotConfirmModel!,
+            listLine: listLine,
           ),
         ),
       ).then((v) {

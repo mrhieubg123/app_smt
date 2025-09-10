@@ -209,7 +209,7 @@ class MachineStatusGetData {
   }
 
   Future createConfirmError({required body}) async {
-    final dioPost = DioClient.instance;
+    if (kDebugMode) return true;
 
     try {
       // final response = await dioPost.post(
@@ -224,7 +224,7 @@ class MachineStatusGetData {
 
       // debugPrint(response.toString());
       if (response.statusCode == 200) {
-        showDialogMessage(message: response.data["msg"]);
+        showDialogMessage(message: "Xác nhận thành công");
         return true;
       }
     } on DioException catch (e) {
@@ -236,7 +236,7 @@ class MachineStatusGetData {
   }
 
   Future createCauseSolution({required body}) async {
-    final dioPost = DioClient.instance;
+    if (kDebugMode) return true;
 
     try {
       // final response = await dioPost.post(Constants.urlAddError, data: body);

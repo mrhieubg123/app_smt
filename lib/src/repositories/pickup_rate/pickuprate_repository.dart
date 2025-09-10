@@ -4,4 +4,5 @@ abstract class  PickupRateRepository {
   Future getDataPickupRateAnalysisByDay();
   Future getDataErrorCauseSolutionPickup();
   Future updateConfirmErrorPickup({required body});
+  Future getPickupRateDetailAnalysis({required body});
 }

@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../../core/model/error_cause_solution_model.dart';
 import '../../../core/model/pickup_rate_abnormal_handle_model.dart';
+import '../../../core/model/pickup_rate_detail_analysis_model.dart';
 import '../../../core/model/pickup_rate_status_model.dart';
 import '../../../core/widget/dialog.dart';
 import '../../data_mau/constants.dart';
@@ -72,7 +73,7 @@ class PickupRateRepositoryImpl implements PickupRateRepository {
   }
 
   @override
-  Future getPickupRateStatus() async {
+  Future getPickupRateStatus({body}) async {
     if (kDebugMode) {
       return DataPickupRateStatusModel.fromJson({
         "data": apiPickupRateStatus_example,
@@ -86,7 +87,7 @@ class PickupRateRepositoryImpl implements PickupRateRepository {
       var response = await dio.request(
         '$otherHost${Constants.urlPickupRateStatus}',
         options: Options(method: 'POST', headers: headers),
-        data: {},
+        data: body,
       );
       // final response = await callApiThroughProxy(
       //   url: myHost + Constants.urlMachineStatus,
@@ -130,7 +131,7 @@ class PickupRateRepositoryImpl implements PickupRateRepository {
 
   @override
   Future updateConfirmErrorPickup({required body}) async {
-
+    if (kDebugMode) return true;
     try {
       final response = await DioFunction().callApiThroughProxy(
         url: myHost + Constants.urlUpdateConfirmPickupRate,
@@ -140,8 +141,32 @@ class PickupRateRepositoryImpl implements PickupRateRepository {
 
       // debugPrint(response.toString());
       if (response.statusCode == 200) {
-        showDialogMessage(message: response.data["message"]);
+        showDialogMessage(message: "Xác nhận thành công");
         return true;
+      }
+    } on DioException catch (e) {
+      showDialogMessage(message: e.response?.data['msg']);
+      return;
+    } catch (e) {
+      showDialogMessage(message: 'Lỗi khi gọi API: $e');
+    }
+  }
+
+  @override
+  Future getPickupRateDetailAnalysis({required body}) async {
+    if (kDebugMode) {
+      return PickupRateDetailAnalysisModel.fromJson({
+        "data": api_PickupRateDetailAnalysis_example,
+      });
+    }
+    try {
+      final response = await DioFunction().callApiThroughProxy(
+        url: otherHost + Constants.urlGetPickupRateDetailAnalysis,
+        method: "POST",
+        data: body,
+      );
+      if (response.statusCode == 200 && response.data != null) {
+        return PickupRateDetailAnalysisModel.fromJson({"data": response.data});
       }
     } on DioException catch (e) {
       showDialogMessage(message: e.response?.data['msg']);

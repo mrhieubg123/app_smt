@@ -3,6 +3,7 @@ import 'package:app_smt/src/screen/pickup_rate_status_screen/error_pickup_table_
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import '../../../core/model/pickup_rate_abnormal_handle_model.dart';
 import '../../../core/model/pickup_rate_status_model.dart';
 import '../../../core/widget/dialog.dart';
@@ -29,6 +30,7 @@ class _PickupRateStatusStatusAppState extends State<PickupRateStatusStatusApp> {
   Timer? _timer;
   List<int> countStatus = [0, 0, 0, 0];
   List<double> specStatus = [99.8, 99.7];
+  bool indexView = true;
   @override
   void initState() {
     startPollingData();
@@ -50,7 +52,15 @@ class _PickupRateStatusStatusAppState extends State<PickupRateStatusStatusApp> {
 
   Future initData() async {
     dataPickupRateStatusModel = await PickupRateRepositoryImpl()
-        .getPickupRateStatus();
+        .getPickupRateStatus(
+          body: indexView
+              ? {}
+              : {
+                  "dateFrom": DateFormat(
+                    'yyyy-MM-dd HH:mm:ss',
+                  ).format(DateTime.now().subtract(Duration(hours: 1))),
+                },
+        );
     if (dataPickupRateStatusModel?.data != null) {
       listLine = MachineStatusGetData().getUniqueSortedLinesPickupRate(
         dataPickupRateStatusModel!.data!,
@@ -109,8 +119,35 @@ class _PickupRateStatusStatusAppState extends State<PickupRateStatusStatusApp> {
     _timer = Timer.periodic(Duration(seconds: 30), (Timer t) async {
       await initData();
       await initDataListConfirm();
-      debugPrint("🕒 Cập nhật mỗi 5 phút:");
+      debugPrint("🕒 Cập nhật mỗi 30 giây:");
     });
+  }
+
+  selectViewWidget() {
+    return InkWell(
+      onTap: () {
+        initData();
+        setState(() {
+          indexView = !indexView;
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.all(4),
+        margin: EdgeInsets.only(right: 24.w),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 4),
+        ),
+        child: Text(
+          indexView ? "Ca" : "Giờ",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24.sp,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -147,6 +184,7 @@ class _PickupRateStatusStatusAppState extends State<PickupRateStatusStatusApp> {
             color: Colors.white,
           ),
         ),
+        actions: [selectViewWidget()],
         centerTitle: true,
       ),
       body: Container(
@@ -260,6 +298,7 @@ class _PickupRateStatusStatusAppState extends State<PickupRateStatusStatusApp> {
           child: Icon(Icons.arrow_back, size: 64.h, color: Colors.white),
         ),
         actions: [
+          selectViewWidget(),
           InkWell(
             onTap: () => goToErrorTableScreen(context),
             child: Stack(
@@ -561,8 +600,10 @@ class _PickupRateStatusStatusAppState extends State<PickupRateStatusStatusApp> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (BuildContext context) =>
-            ErrorPickupTableScreen(listDataAbnormal: listDataAbnormal!),
+        builder: (BuildContext context) => ErrorPickupTableScreen(
+          listDataAbnormal: listDataAbnormal,
+          listLine: listLine,
+        ),
       ),
     ).then((v) {
       initData();

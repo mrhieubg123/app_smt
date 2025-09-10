@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/model/pickup_rate_status_model.dart';
 import '../../../../main.dart';
-import '../../../../core/model/machine_status_model.dart';
-import '../../machine_detail_screen/machine_detsail_screen.dart';
+import '../pickup_rate_detail_screen/pickup_rate_detail_screen.dart';
 
 class PickupRateStatusTableLandscapeWidget extends StatelessWidget {
   PickupRateStatusTableLandscapeWidget({
@@ -24,31 +23,11 @@ class PickupRateStatusTableLandscapeWidget extends StatelessWidget {
   final int numberColumns = 10;
   final int numberRowsPerLine = 2;
 
-  List<PickupRateStatusModel> machines = [];
+  final List<PickupRateStatusModel> machines;
 
-  List<String> lineNames = [
-    "Line_1F",
-    "Line_1R",
-    "Line_2F",
-    "Line_2R",
-    "Line_4F",
-    "Line_4R",
-    "Line_5F",
-    "Line_5R",
-  ];
+  final List<String> lineNames;
 
-  List<String> columnNames = [
-    "PRINTER",
-    "H1",
-    "H2",
-    "H3",
-    "H4",
-    "H5",
-    "H6",
-    "H7",
-    "H8",
-    "REFLOW",
-  ];
+  final List<String> columnNames;
 
   Widget buildLight({Color? color, double? radius, onTap, double? value}) {
     return InkWell(
@@ -102,7 +81,7 @@ class PickupRateStatusTableLandscapeWidget extends StatelessWidget {
     return Colors.grey;
   }
 
-  double widthNameLine = 48.w;
+  final double widthNameLine = 48.w;
 
   Widget buildColumnName() {
     return Row(
@@ -200,13 +179,9 @@ class PickupRateStatusTableLandscapeWidget extends StatelessWidget {
                                             lineNames[lineIndex],
                                             columnNames[index],
                                           ),
-                                          // onTap: () =>
-                                          //     goToMachineDetailScreen(
-                                          //         getMachineFromLineLocation(
-                                          //           lineNames[lineIndex],
-                                          //           columnNames[index],
-                                          //         ),columnNames[index]
-                                          //     ),
+                                          onTap: () =>
+                                              goToMachineDetailScreen(lineNames[lineIndex],columnNames[index]
+                                              ),
                                           color: getColorFromLineLocation(
                                             lineNames[lineIndex],
                                             columnNames[index],
@@ -241,12 +216,12 @@ class PickupRateStatusTableLandscapeWidget extends StatelessWidget {
     );
   }
 
-  goToMachineDetailScreen(machine, name) {
+  goToMachineDetailScreen(machine, line) {
     Navigator.push(
       navigatorKey.currentContext!,
       MaterialPageRoute(
         builder: (BuildContext context) =>
-            MachineDetailScreen(machine: machine, name: name),
+            PickupRateDetailScreen(machine: machine, line: line),
       ),
     );
   }
