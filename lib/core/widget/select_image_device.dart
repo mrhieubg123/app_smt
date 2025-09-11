@@ -1,12 +1,14 @@
 import 'dart:io';
 
+import 'package:app_smt/core/function/dio_function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import '../function/function.dart';
 
 class SelectImageDeviceWidget extends StatefulWidget {
-  const SelectImageDeviceWidget({super.key});
+  final String idError;
+  const SelectImageDeviceWidget({super.key, required this.idError});
 
   @override
   State<SelectImageDeviceWidget> createState() =>
@@ -20,6 +22,12 @@ class _SelectImageDeviceWidgetState extends State<SelectImageDeviceWidget> {
     return InkWell(
       onTap: () async {
         XFile? result = await FunctionExp().selectImageFromDevice();
+        if (result == null) return;
+        final resultUpload = await DioFunction().uploadImage(
+          idError: widget.idError,
+          srcImage: result.path,
+        );
+        if (resultUpload != true) return;
         setState(() {
           fileImage = result;
         });
@@ -32,6 +40,7 @@ class _SelectImageDeviceWidgetState extends State<SelectImageDeviceWidget> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.r),
               border: Border.all(color: Colors.blueAccent),
+              color: Colors.white,
             ),
             child: Text(
               "+ Ảnh nguyên nhân",

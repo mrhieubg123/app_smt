@@ -1,6 +1,9 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widget/dialog.dart';
@@ -38,7 +41,6 @@ class DioFunction {
   }
 
   Future callApiThroughProxy({url, method, header, data}) async {
-
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     Map<String, dynamic> headers = {
@@ -66,5 +68,33 @@ class DioFunction {
       showDialogMessage(message: "❌ Lỗi khi gọi proxy: $e");
     }
     return;
+  }
+
+  Future uploadImage({url, srcImage, time, idError}) async {
+    if (kDebugMode) return true;
+    var data = FormData.fromMap({
+      'files': [await MultipartFile.fromFile(srcImage)],
+      'formData':
+          '{"idError": $idError,"DateTime": ${time ?? DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}}',
+    });
+    try {
+      var dio = Dio();
+      var response = await dio.request(
+        'https://10.225.42.71:5000/api/files/uploadImageError',
+        options: Options(method: 'POST'),
+        data: data,
+      );
+
+      if (response.statusCode == 200) {
+        showDialogMessage(message: 'Upload image success');
+        return true;
+      }
+    } on DioException catch (e) {
+      showDialogMessage(message: '❌ Upload image fail: $e');
+    } catch (e) {
+      showDialogMessage(message: '❌ Upload image fail: $e');
+    }
+
+    return false;
   }
 }

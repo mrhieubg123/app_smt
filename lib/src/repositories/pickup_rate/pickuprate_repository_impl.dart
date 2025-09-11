@@ -45,7 +45,7 @@ class PickupRateRepositoryImpl implements PickupRateRepository {
   }
 
   @override
-  Future getDataPickupRateAnalysisByDay() async {
+  Future getDataPickupRateAnalysisByDay({body}) async {
     if (kDebugMode) {
       return PickupRateAnalysisByDayModel.fromJson(
         api_PickupRateAnalysisByDay_example,
@@ -56,7 +56,7 @@ class PickupRateRepositoryImpl implements PickupRateRepository {
       final response = await DioFunction().callApiThroughProxy(
         url: otherHost + Constants.urlGetDataPickupRateAnalysisByDay,
         method: "POST",
-        data: {},
+        data: body,
       );
       debugPrint(response.toString());
       if (response.statusCode == 200 && response.data != null) {
@@ -154,6 +154,7 @@ class PickupRateRepositoryImpl implements PickupRateRepository {
 
   @override
   Future getPickupRateDetailAnalysis({required body}) async {
+    debugPrint(body.toString());
     if (kDebugMode) {
       return PickupRateDetailAnalysisModel.fromJson({
         "data": api_PickupRateDetailAnalysis_example,

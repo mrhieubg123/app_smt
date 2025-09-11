@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/model/pickup_rate_analysis_model.dart';
 import '../../../repositories/pickup_rate/pickuprate_repository_impl.dart';
@@ -30,6 +31,7 @@ class _PickupRateAnalysisScreenState extends State<PickupRateAnalysisScreen> {
     {'name': 'Jjjjj', 'value': 12.0},
   ];
   PickupRateAnalysisByDayModel? pickupRateAnalysisByDayModel;
+  bool indexView = true;
 
   @override
   void initState() {
@@ -43,7 +45,15 @@ class _PickupRateAnalysisScreenState extends State<PickupRateAnalysisScreen> {
 
   Future initData() async {
     pickupRateAnalysisByDayModel = await PickupRateRepositoryImpl()
-        .getDataPickupRateAnalysisByDay();
+        .getDataPickupRateAnalysisByDay(
+          body: indexView
+              ? {}
+              : {
+                  "dateFrom": DateFormat(
+                    'yyyy-MM-dd HH:mm:ss',
+                  ).format(DateTime.now().subtract(Duration(hours: 1))),
+                },
+        );
     final lst = pickupRateAnalysisByDayModel?.dataBySlot ?? [];
     setState(() {
       sampleData = groupByCause(lst);
@@ -84,6 +94,33 @@ class _PickupRateAnalysisScreenState extends State<PickupRateAnalysisScreen> {
     super.dispose();
   }
 
+  selectViewWidget() {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          indexView = !indexView;
+        });
+        initData();
+      },
+      child: Container(
+        padding: EdgeInsets.all(4),
+        margin: EdgeInsets.only(right: 24.w),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 4),
+        ),
+        child: Text(
+          indexView ? "Ca" : "Giờ",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24.sp,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final maxValue = sampleData
@@ -108,13 +145,19 @@ class _PickupRateAnalysisScreenState extends State<PickupRateAnalysisScreen> {
           // 👉 Tiêu đề trục Y xoay dọc
           RotatedBox(
             quarterTurns: -1,
-            child: Text(
-              '   Analysis Error by Slot',
-              style: TextStyle(
-                fontSize: 24.sp,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+            child: Row(
+              children: [
+                Text(
+                  '   Analysis Error by Slot',
+                  style: TextStyle(
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(width: 8),
+                selectViewWidget(),
+              ],
             ),
           ),
           Expanded(

@@ -5,6 +5,7 @@ import '../../../../core/model/error_cause_solution_model.dart';
 import '../../../../core/model/error_detail_model.dart';
 import '../../../../core/model/error_not_confirm_model.dart';
 import '../../../../core/widget/dialog.dart';
+import '../../../../core/widget/select_image_device.dart';
 import '../../machine_status_screen/machine_status_getdata.dart';
 
 class DropDownButton extends StatefulWidget {
@@ -67,10 +68,12 @@ class _DropDownButtonState extends State<DropDownButton> {
   @override
   Widget build(BuildContext context) {
     // Biểu thức chính quy để tách chuỗi thành các phần
-    RegExp regExp = RegExp(r"^(.*)-(.*)-(.*)-(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})-(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})---(.*)-ID(\d+)$");
+    RegExp regExp = RegExp(
+      r"^(.*)-(.*)-(.*)-(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})-(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})---(.*)-ID(\d+)$",
+    );
 
     // Tìm các phần tử khớp với biểu thức chính quy
-    Match? match = regExp.firstMatch(widget.errorNotConfirmModel.content??"");
+    Match? match = regExp.firstMatch(widget.errorNotConfirmModel.content ?? "");
     String? line = match?.group(1)!; // line-location
     String? location = match?.group(2)!; // location
     String? type = match?.group(3)!; // location
@@ -106,14 +109,8 @@ class _DropDownButtonState extends State<DropDownButton> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        infoRow(
-                          title: "Machine name",
-                          text: location,
-                        ),
-                        infoRow(
-                          title: "Line",
-                          text: line,
-                        ),
+                        infoRow(title: "Machine name", text: location),
+                        infoRow(title: "Line", text: line),
                         // infoRow(
                         //   title: "Location",
                         //   text: widget.errorNotConfirmModel.lOCATION,
@@ -128,14 +125,8 @@ class _DropDownButtonState extends State<DropDownButton> {
                           text: errorName,
                           color: Colors.redAccent,
                         ),
-                        infoRow(
-                          title: "Start time",
-                          text: startTime,
-                        ),
-                        infoRow(
-                          title: "End time",
-                          text: endTime,
-                        ),
+                        infoRow(title: "Start time", text: startTime),
+                        infoRow(title: "End time", text: endTime),
                       ],
                     ),
                   ),
@@ -272,6 +263,9 @@ class _DropDownButtonState extends State<DropDownButton> {
                         ],
                       ),
                     ),
+                  ),
+                  SelectImageDeviceWidget(
+                    idError: widget.errorNotConfirmModel.iDD.toString(),
                   ),
                   InkWell(
                     onTap: onTapConfirm,
@@ -479,17 +473,17 @@ class _DropDownButtonState extends State<DropDownButton> {
                     ),
                   ),
                 ),
-                InkWell(
-                  onTap: onTapAddGiaiPhap,
-                  child: Text(
-                    "+ Thêm giải pháp",
-                    style: TextStyle(
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.blueAccent,
-                    ),
-                  ),
-                ),
+                // InkWell(
+                //   onTap: onTapAddGiaiPhap,
+                //   child: Text(
+                //     "+ Thêm giải pháp",
+                //     style: TextStyle(
+                //       fontSize: 24.sp,
+                //       fontWeight: FontWeight.w400,
+                //       color: Colors.blueAccent,
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -507,10 +501,6 @@ class _DropDownButtonState extends State<DropDownButton> {
       showDialogMessage(message: "Vui lòng chọn giải pháp");
       return;
     }
-    // ErrorCauseSolutionModel? errorListSelected = errorDetailTotalModel!.data
-    //     ?.firstWhere(
-    //       (e) => (e.cause == nguyenNhan?.cause && e.solution == giaiPhap),
-    //     );
     dynamic result = await MachineStatusGetData().createConfirmError(
       body: {
         "IDD": widget.errorNotConfirmModel.iDD,
@@ -531,11 +521,7 @@ class _DropDownButtonState extends State<DropDownButton> {
     final List<String?>? result = await showTextInputDialog();
     if (result != null) {
       dynamic resultApi = await MachineStatusGetData().createCauseSolution(
-        body: {
-          "cause": result[0],
-          "solution": result[1],
-          "type": "MACHINE"
-        },
+        body: {"cause": result[0], "solution": result[1], "type": "MACHINE"},
       );
       if (resultApi == true) {
         showDialogMessage(message: "Thêm nguyên nhân/giải pháp mới thành công");
@@ -557,7 +543,7 @@ class _DropDownButtonState extends State<DropDownButton> {
         body: {
           "cause": nguyenNhan?.cause,
           "solution": result[0],
-          "type": "MACHINE"
+          "type": "MACHINE",
         },
       );
       if (resultApi == true) {

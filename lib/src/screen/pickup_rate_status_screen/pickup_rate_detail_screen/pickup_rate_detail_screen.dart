@@ -46,7 +46,10 @@ class _PickupRateDetailScreenState extends State<PickupRateDetailScreen> {
   initData() async {
     pickupRateDetailAnalysisModel = await PickupRateRepositoryImpl()
         .getPickupRateDetailAnalysis(
-          body: {"machine": widget.machine, "line": widget.line},
+          body: {
+            "machine": widget.machine,
+            "line": widget.line.replaceAll("BN3_", ""),
+          },
         );
     setState(() {});
   }
@@ -77,6 +80,15 @@ class _PickupRateDetailScreenState extends State<PickupRateDetailScreen> {
           onTap: () => Navigator.pop(context),
           child: Icon(Icons.arrow_back, size: 64.h, color: Colors.white),
         ),
+        title: Text(
+          "Pickup rate detail",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 24.sp,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
       ),
       body: Container(
         height: double.infinity,
@@ -103,7 +115,7 @@ class _PickupRateDetailScreenState extends State<PickupRateDetailScreen> {
               DataColumn(label: titleWidget('Lost Rate')),
             ],
             rows: [
-              ...(pickupRateDetailAnalysisModel.data??[]).map((e) {
+              ...(pickupRateDetailAnalysisModel.data ?? []).map((e) {
                 return DataRow(
                   cells: [
                     DataCell(valueWidget(e.lINENAME)),
