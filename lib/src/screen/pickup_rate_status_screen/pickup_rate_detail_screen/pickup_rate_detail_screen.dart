@@ -47,8 +47,8 @@ class _PickupRateDetailScreenState extends State<PickupRateDetailScreen> {
     pickupRateDetailAnalysisModel = await PickupRateRepositoryImpl()
         .getPickupRateDetailAnalysis(
           body: {
-            "machine": widget.machine,
-            "line": widget.line.replaceAll("BN3_", ""),
+            "machine":widget.line.replaceAll("BN3_", "") ,
+            "line": widget.machine,
           },
         );
     setState(() {});
