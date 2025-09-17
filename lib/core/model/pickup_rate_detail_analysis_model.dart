@@ -35,19 +35,20 @@ class ItemPickupRateDetailAnalysisModel {
   String? trend;
   double? diff;
 
-  ItemPickupRateDetailAnalysisModel(
-      {this.lINENAME,
-        this.mACHINE,
-        this.pARTNAME,
-        this.fEEDERSN,
-        this.sLOTNO,
-        this.mO,
-        this.tOTALQTY,
-        this.fAILQTY,
-        this.pickupRate,
-        this.pickupRateBefo,
-        this.trend,
-        this.diff});
+  ItemPickupRateDetailAnalysisModel({
+    this.lINENAME,
+    this.mACHINE,
+    this.pARTNAME,
+    this.fEEDERSN,
+    this.sLOTNO,
+    this.mO,
+    this.tOTALQTY,
+    this.fAILQTY,
+    this.pickupRate,
+    this.pickupRateBefo,
+    this.trend,
+    this.diff,
+  });
 
   ItemPickupRateDetailAnalysisModel.fromJson(Map<String, dynamic> json) {
     lINENAME = json['LINE_NAME'];
@@ -58,10 +59,10 @@ class ItemPickupRateDetailAnalysisModel {
     mO = json['MO'];
     tOTALQTY = json['TOTAL_QTY'];
     fAILQTY = json['FAIL_QTY'];
-    pickupRate = json['PickupRate'];
-    pickupRateBefo = json['PickupRateBefo'];
+    pickupRate = double.parse((json['PickupRate'] ?? 0).toString());
+    pickupRateBefo = double.parse((json['PickupRateBefo'] ?? 0).toString());
     trend = json['Trend'];
-    diff = json['Diff'];
+    diff = double.parse((json['Diff'] ?? 0).toString());
   }
 
   Map<String, dynamic> toJson() {
